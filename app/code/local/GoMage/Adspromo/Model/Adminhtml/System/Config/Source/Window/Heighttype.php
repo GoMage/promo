@@ -8,15 +8,13 @@
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
  * @version      Release: 1.1
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 1.1
  */
 	
-class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Category_Applayto{
-
+class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Heighttype{
     
-    const ALL_CATEGORIES = 1;
-    const SELECTED_CATEGORIES = 2;
-            
+    const MANUALLY = 0;
+    const AUTOMATICALLY = 1;
     /**
      * Options getter
      *
@@ -28,8 +26,8 @@ class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Category_Applayto{
     	$helper = Mage::helper('gomage_adspromo');
     	
         return array(
-            array('value' => self::ALL_CATEGORIES, 'label'=>$helper->__('All Categories')),
-            array('value' => self::SELECTED_CATEGORIES, 'label'=>$helper->__('Selected Categories')),           
+            array('value' => self::MANUALLY, 'label'=>$helper->__('Manually')),
+            array('value' => self::AUTOMATICALLY, 'label'=>$helper->__('Automatically')),            
         );
     }
 

@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 	
@@ -31,6 +31,17 @@ class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show{
             array('value' => self::IMAGE, 'label'=>$helper->__('Promo Image')),
             array('value' => self::WINDOW, 'label'=>$helper->__('Promo Window')),
             array('value' => self::IMAGE_AND_WINDOW, 'label'=>$helper->__('Promo Image and Window')),
+        );
+    }
+    
+	public static function toOptionHash()
+    {    	
+    	$helper = Mage::helper('gomage_adspromo');
+    	
+        return array(
+            self::IMAGE => $helper->__('Promo Image'),
+            self::WINDOW => $helper->__('Promo Window'),
+            self::IMAGE_AND_WINDOW => $helper->__('Promo Image and Window'),
         );
     }
 

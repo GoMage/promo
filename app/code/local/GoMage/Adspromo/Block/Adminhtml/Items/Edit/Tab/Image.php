@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -72,7 +72,7 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit_Tab_Image extends Mage_Adminhtm
             array(
                 'name'   => 'alternative_image',
                 'label'  => $this->__('Alternative Image'), 
-                'note'	 => $this->__('Will be showed when mouse over image'),                                  
+                'note'	 => $this->__('Will be shown when mouse over is image'),                                  
             )
         );
         
@@ -97,13 +97,21 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit_Tab_Image extends Mage_Adminhtm
                 'values' => Mage::getModel('gomage_adspromo/adminhtml_system_config_source_image_effect')->toOptionArray(), 
             )
         );
-                        
+        
+        $image_indent_type = $fieldset->addField('image_indent_type', 'select',
+            array(
+                'name'   => 'image_indent_type',
+                'label'  => $this->__('Set Promo Image Indent in'),                
+                'values' => Mage::getModel('gomage_adspromo/adminhtml_system_config_source_image_indent_type')->toOptionArray(), 
+            )
+        );
+        $image_indent_type->setOnchange("AdsPromoAdmin.setpercentRange('image_indent_type', 'image_indent')");
+                                
         $fieldset->addField('image_indent', 'text', array(
             'name'      => 'image_indent',
             'label'     => $this->__('Promo Image Indent'),
             'title'     => $this->__('Promo Image Indent'),
- 		    'class'     => 'gomage-validate-number-range-100',
-            'note'	    => $this->__('range from 0 to 100'),     	
+        	'class'     => 'gomage-validate-number', 		       	
         ));
                         
         $image_open_link = $fieldset->addField('image_open_link', 'select',

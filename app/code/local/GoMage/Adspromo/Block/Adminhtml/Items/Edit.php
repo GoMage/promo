@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -43,7 +43,7 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Wi
         
         if (Mage::registry('gomage_adspromo'))
         {
-             $settings['show_type'] = Mage::registry('gomage_adspromo')->getShow();
+             $settings['show_type'] = Mage::registry('gomage_adspromo')->getShowType();
              $settings['window_hide'] = Mage::registry('gomage_adspromo')->getWindowHide();
              $settings['image_open_link'] = Mage::registry('gomage_adspromo')->getImageOpenLink();
              $settings['window_position'] = Mage::registry('gomage_adspromo')->getWindowPosition();
@@ -58,7 +58,14 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Wi
         $settings['window_position_options'] = GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Position::toOptionArray();
         $settings['window_position_options_for_window'] = GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Position::toOptionArray(true);
              
-        
+        if($adspromo)
+        {
+            $product_ids = split(",",$adspromo->getProductIds());
+            foreach($product_ids as $_product_ids)
+            {
+                $products[$_product_ids]= 1;
+            }
+        }
         $this->_formScripts[] = "
             function toggleEditor() {
                 if (tinyMCE.getInstanceById('window_content') == null) {
@@ -73,12 +80,16 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Wi
             }
             
             var AdsPromoAdmin = new AdsPromoAdminSettings(" . Mage::helper('core')->jsonEncode($settings) . ");
+            var blockItems = \$H(".Mage::helper('core')->jsonEncode($products).");
+            adspromo_products_gridJsObject.reloadParams = {'selected_products[]':blockItems.keys()};
+            \$('product_ids').value = '".($adspromo ? $adspromo->getProductIds() : '')."';
             
         "; 
         
         
         
     }
+    
     
     public function getHeaderText(){
     	

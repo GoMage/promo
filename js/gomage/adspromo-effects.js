@@ -64,7 +64,7 @@ Element.forceRerendering = function(element) {
 
 /*--------------------------------------------------------------------------*/
 
-var Effect = {
+var GapEffect = {
   _elementDoesNotExistError: {
     name: 'ElementDoesNotExistError',
     message: 'The specified DOM element does not exist, but is required for this effect to operate'
@@ -151,17 +151,17 @@ var Effect = {
     element = $(element);
     effect  = (effect || 'appear').toLowerCase();
     
-    return Effect[ Effect.PAIRS[ effect ][ element.visible() ? 1 : 0 ] ](element, Object.extend({
+    return GapEffect[ GapEffect.PAIRS[ effect ][ element.visible() ? 1 : 0 ] ](element, Object.extend({
       queue: { position:'end', scope:(element.id || 'global'), limit: 1 }
     }, options || {}));
   }
 };
 
-Effect.DefaultOptions.transition = Effect.Transitions.sinoidal;
+GapEffect.DefaultOptions.transition = GapEffect.Transitions.sinoidal;
 
 /* ------------- core effects ------------- */
 
-Effect.ScopedQueue = Class.create(Enumerable, {
+GapEffect.ScopedQueue = Class.create(Enumerable, {
   initialize: function() {
     this.effects  = [];
     this.interval = null;
@@ -215,22 +215,22 @@ Effect.ScopedQueue = Class.create(Enumerable, {
   }
 });
 
-Effect.Queues = {
+GapEffect.Queues = {
   instances: $H(),
   get: function(queueName) {
     if (!Object.isString(queueName)) return queueName;
 
     return this.instances.get(queueName) ||
-      this.instances.set(queueName, new Effect.ScopedQueue());
+      this.instances.set(queueName, new GapEffect.ScopedQueue());
   }
 };
-Effect.Queue = Effect.Queues.get('global');
+GapEffect.Queue = GapEffect.Queues.get('global');
 
-Effect.Base = Class.create({
+GapEffect.Base = Class.create({
   position: null,
   start: function(options) {
-    if (options && options.transition === false) options.transition = Effect.Transitions.linear;
-    this.options      = Object.extend(Object.extend({ },Effect.DefaultOptions), options || { });
+    if (options && options.transition === false) options.transition = GapEffect.Transitions.linear;
+    this.options      = Object.extend(Object.extend({ },GapEffect.DefaultOptions), options || { });
     this.currentFrame = 0;
     this.state        = 'idle';
     this.startOn      = this.options.delay*1000;
@@ -266,7 +266,7 @@ Effect.Base = Class.create({
 
     this.event('beforeStart');
     if (!this.options.sync)
-      Effect.Queues.get(Object.isString(this.options.queue) ?
+      GapEffect.Queues.get(Object.isString(this.options.queue) ?
         'global' : this.options.queue.scope).add(this);
   },
   loop: function(timePos) {
@@ -289,7 +289,7 @@ Effect.Base = Class.create({
   },
   cancel: function() {
     if (!this.options.sync)
-      Effect.Queues.get(Object.isString(this.options.queue) ?
+      GapEffect.Queues.get(Object.isString(this.options.queue) ?
         'global' : this.options.queue.scope).remove(this);
     this.state = 'finished';
   },
@@ -301,11 +301,11 @@ Effect.Base = Class.create({
     var data = $H();
     for(property in this)
       if (!Object.isFunction(this[property])) data.set(property, this[property]);
-    return '#<Effect:' + data.inspect() + ',options:' + $H(this.options).inspect() + '>';
+    return '#<GapEffect:' + data.inspect() + ',options:' + $H(this.options).inspect() + '>';
   }
 });
 
-Effect.Parallel = Class.create(Effect.Base, {
+GapEffect.Parallel = Class.create(GapEffect.Base, {
   initialize: function(effects) {
     this.effects = effects || [];
     this.start(arguments[1]);
@@ -324,7 +324,7 @@ Effect.Parallel = Class.create(Effect.Base, {
   }
 });
 
-Effect.Tween = Class.create(Effect.Base, {
+GapEffect.Tween = Class.create(GapEffect.Base, {
   initialize: function(object, from, to) {
     object = Object.isString(object) ? $(object) : object;
     var args = $A(arguments), method = args.last(),
@@ -339,17 +339,17 @@ Effect.Tween = Class.create(Effect.Base, {
   }
 });
 
-Effect.Event = Class.create(Effect.Base, {
+GapEffect.Event = Class.create(GapEffect.Base, {
   initialize: function() {
     this.start(Object.extend({ duration: 0 }, arguments[0] || { }));
   },
   update: Prototype.emptyFunction
 });
 
-Effect.Opacity = Class.create(Effect.Base, {
+GapEffect.Opacity = Class.create(GapEffect.Base, {
   initialize: function(element) {
     this.element = $(element);
-    if (!this.element) throw(Effect._elementDoesNotExistError);
+    if (!this.element) throw(GapEffect._elementDoesNotExistError);
     // make this work on IE on elements without 'layout'
     if (Prototype.Browser.IE && (!this.element.currentStyle.hasLayout))
       this.element.setStyle({zoom: 1});
@@ -364,10 +364,10 @@ Effect.Opacity = Class.create(Effect.Base, {
   }
 });
 
-Effect.Move = Class.create(Effect.Base, {
+GapEffect.Move = Class.create(GapEffect.Base, {
   initialize: function(element) {
     this.element = $(element);
-    if (!this.element) throw(Effect._elementDoesNotExistError);
+    if (!this.element) throw(GapEffect._elementDoesNotExistError);
     var options = Object.extend({
       x:    0,
       y:    0,
@@ -393,15 +393,15 @@ Effect.Move = Class.create(Effect.Base, {
 });
 
 // for backwards compatibility
-Effect.MoveBy = function(element, toTop, toLeft) {
-  return new Effect.Move(element,
+GapEffect.MoveBy = function(element, toTop, toLeft) {
+  return new GapEffect.Move(element,
     Object.extend({ x: toLeft, y: toTop }, arguments[3] || { }));
 };
 
-Effect.Scale = Class.create(Effect.Base, {
+GapEffect.Scale = Class.create(GapEffect.Base, {
   initialize: function(element, percent) {
     this.element = $(element);
-    if (!this.element) throw(Effect._elementDoesNotExistError);
+    if (!this.element) throw(GapEffect._elementDoesNotExistError);
     var options = Object.extend({
       scaleX: true,
       scaleY: true,
@@ -472,10 +472,10 @@ Effect.Scale = Class.create(Effect.Base, {
   }
 });
 
-Effect.Highlight = Class.create(Effect.Base, {
+GapEffect.Highlight = Class.create(GapEffect.Base, {
   initialize: function(element) {
     this.element = $(element);
-    if (!this.element) throw(Effect._elementDoesNotExistError);
+    if (!this.element) throw(GapEffect._elementDoesNotExistError);
     var options = Object.extend({ startcolor: '#ffff99' }, arguments[1] || { });
     this.start(options);
   },
@@ -507,14 +507,14 @@ Effect.Highlight = Class.create(Effect.Base, {
   }
 });
 
-Effect.ScrollTo = function(element) {
+GapEffect.ScrollTo = function(element) {
   var options = arguments[1] || { },
   scrollOffsets = document.viewport.getScrollOffsets(),
   elementOffsets = $(element).cumulativeOffset();
 
   if (options.offset) elementOffsets[1] += options.offset;
 
-  return new Effect.Tween(null,
+  return new GapEffect.Tween(null,
     scrollOffsets.top,
     elementOffsets[1],
     options,
@@ -524,7 +524,7 @@ Effect.ScrollTo = function(element) {
 
 /* ------------- combination effects ------------- */
 
-Effect.Fade = function(element) {
+GapEffect.Fade = function(element) {
   element = $(element);
   var oldOpacity = element.getInlineOpacity();
   var options = Object.extend({
@@ -535,10 +535,10 @@ Effect.Fade = function(element) {
       effect.element.hide().setStyle({opacity: oldOpacity});
     }
   }, arguments[1] || { });
-  return new Effect.Opacity(element,options);
+  return new GapEffect.Opacity(element,options);
 };
 
-Effect.Appear = function(element) {
+GapEffect.Appear = function(element) {
   element = $(element);
   var options = Object.extend({
   from: (element.getStyle('display') == 'none' ? 0.0 : element.getOpacity() || 0.0),
@@ -550,10 +550,10 @@ Effect.Appear = function(element) {
   beforeSetup: function(effect) {
     effect.element.setOpacity(effect.options.from).show();
   }}, arguments[1] || { });
-  return new Effect.Opacity(element,options);
+  return new GapEffect.Opacity(element,options);
 };
 
-Effect.Puff = function(element) {
+GapEffect.Puff = function(element) {
   element = $(element);
   var oldStyle = {
     opacity: element.getInlineOpacity(),
@@ -563,10 +563,10 @@ Effect.Puff = function(element) {
     width: element.style.width,
     height: element.style.height
   };
-  return new Effect.Parallel(
-   [ new Effect.Scale(element, 200,
+  return new GapEffect.Parallel(
+   [ new GapEffect.Scale(element, 200,
       { sync: true, scaleFromCenter: true, scaleContent: true, restoreAfterFinish: true }),
-     new Effect.Opacity(element, { sync: true, to: 0.0 } ) ],
+     new GapEffect.Opacity(element, { sync: true, to: 0.0 } ) ],
      Object.extend({ duration: 1.0,
       beforeSetupInternal: function(effect) {
         Position.absolutize(effect.effects[0].element);
@@ -577,10 +577,10 @@ Effect.Puff = function(element) {
    );
 };
 
-Effect.BlindUp = function(element) {
+GapEffect.BlindUp = function(element) {
   element = $(element);
   element.makeClipping();
-  return new Effect.Scale(element, 0,
+  return new GapEffect.Scale(element, 0,
     Object.extend({ scaleContent: false,
       scaleX: false,
       restoreAfterFinish: true,
@@ -591,10 +591,10 @@ Effect.BlindUp = function(element) {
   );
 };
 
-Effect.BlindDown = function(element) {
+GapEffect.BlindDown = function(element) {
   element = $(element);
   var elementDimensions = element.getDimensions();
-  return new Effect.Scale(element, 100, Object.extend({
+  return new GapEffect.Scale(element, 100, Object.extend({
     scaleContent: false,
     scaleX: false,
     scaleFrom: 0,
@@ -609,15 +609,15 @@ Effect.BlindDown = function(element) {
   }, arguments[1] || { }));
 };
 
-Effect.SwitchOff = function(element) {
+GapEffect.SwitchOff = function(element) {
   element = $(element);
   var oldOpacity = element.getInlineOpacity();
-  return new Effect.Appear(element, Object.extend({
+  return new GapEffect.Appear(element, Object.extend({
     duration: 0.4,
     from: 0,
-    transition: Effect.Transitions.flicker,
+    transition: GapEffect.Transitions.flicker,
     afterFinishInternal: function(effect) {
-      new Effect.Scale(effect.element, 1, {
+      new GapEffect.Scale(effect.element, 1, {
         duration: 0.3, scaleFromCenter: true,
         scaleX: false, scaleContent: false, restoreAfterFinish: true,
         beforeSetup: function(effect) {
@@ -631,15 +631,15 @@ Effect.SwitchOff = function(element) {
   }, arguments[1] || { }));
 };
 
-Effect.DropOut = function(element) {
+GapEffect.DropOut = function(element) {
   element = $(element);
   var oldStyle = {
     top: element.getStyle('top'),
     left: element.getStyle('left'),
     opacity: element.getInlineOpacity() };
-  return new Effect.Parallel(
-    [ new Effect.Move(element, {x: 0, y: 100, sync: true }),
-      new Effect.Opacity(element, { sync: true, to: 0.0 }) ],
+  return new GapEffect.Parallel(
+    [ new GapEffect.Move(element, {x: 0, y: 100, sync: true }),
+      new GapEffect.Opacity(element, { sync: true, to: 0.0 }) ],
     Object.extend(
       { duration: 0.5,
         beforeSetup: function(effect) {
@@ -651,7 +651,7 @@ Effect.DropOut = function(element) {
       }, arguments[1] || { }));
 };
 
-Effect.Shake = function(element) {
+GapEffect.Shake = function(element) {
   element = $(element);
   var options = Object.extend({
     distance: 20,
@@ -662,28 +662,28 @@ Effect.Shake = function(element) {
   var oldStyle = {
     top: element.getStyle('top'),
     left: element.getStyle('left') };
-    return new Effect.Move(element,
+    return new GapEffect.Move(element,
       { x:  distance, y: 0, duration: split, afterFinishInternal: function(effect) {
-    new Effect.Move(effect.element,
+    new GapEffect.Move(effect.element,
       { x: -distance*2, y: 0, duration: split*2,  afterFinishInternal: function(effect) {
-    new Effect.Move(effect.element,
+    new GapEffect.Move(effect.element,
       { x:  distance*2, y: 0, duration: split*2,  afterFinishInternal: function(effect) {
-    new Effect.Move(effect.element,
+    new GapEffect.Move(effect.element,
       { x: -distance*2, y: 0, duration: split*2,  afterFinishInternal: function(effect) {
-    new Effect.Move(effect.element,
+    new GapEffect.Move(effect.element,
       { x:  distance*2, y: 0, duration: split*2,  afterFinishInternal: function(effect) {
-    new Effect.Move(effect.element,
+    new GapEffect.Move(effect.element,
       { x: -distance, y: 0, duration: split, afterFinishInternal: function(effect) {
         effect.element.undoPositioned().setStyle(oldStyle);
   }}); }}); }}); }}); }}); }});
 };
 
-Effect.SlideDown = function(element) {
+GapEffect.SlideDown = function(element) {
   element = $(element).cleanWhitespace();
   // SlideDown need to have the content of the element wrapped in a container element with fixed height!
   var oldInnerBottom = element.down().getStyle('bottom');
   var elementDimensions = element.getDimensions();
-  return new Effect.Scale(element, 100, Object.extend({
+  return new GapEffect.Scale(element, 100, Object.extend({
     scaleContent: false,
     scaleX: false,
     scaleFrom: window.opera ? 0 : 1,
@@ -709,11 +709,11 @@ Effect.SlideDown = function(element) {
   );
 };
 
-Effect.SlideUp = function(element) {
+GapEffect.SlideUp = function(element) {
   element = $(element).cleanWhitespace();
   var oldInnerBottom = element.down().getStyle('bottom');
   var elementDimensions = element.getDimensions();
-  return new Effect.Scale(element, window.opera ? 0 : 1,
+  return new GapEffect.Scale(element, window.opera ? 0 : 1,
    Object.extend({ scaleContent: false,
     scaleX: false,
     scaleMode: 'box',
@@ -739,8 +739,8 @@ Effect.SlideUp = function(element) {
 };
 
 // Bug in opera makes the TD containing this element expand for a instance after finish
-Effect.Squish = function(element) {
-  return new Effect.Scale(element, window.opera ? 1 : 0, {
+GapEffect.Squish = function(element) {
+  return new GapEffect.Scale(element, window.opera ? 1 : 0, {
     restoreAfterFinish: true,
     beforeSetup: function(effect) {
       effect.element.makeClipping();
@@ -751,13 +751,13 @@ Effect.Squish = function(element) {
   });
 };
 
-Effect.Grow = function(element) {
+GapEffect.Grow = function(element) {
   element = $(element);
   var options = Object.extend({
     direction: 'center',
-    moveTransition: Effect.Transitions.sinoidal,
-    scaleTransition: Effect.Transitions.sinoidal,
-    opacityTransition: Effect.Transitions.full
+    moveTransition: GapEffect.Transitions.sinoidal,
+    scaleTransition: GapEffect.Transitions.sinoidal,
+    opacityTransition: GapEffect.Transitions.full
   }, arguments[1] || { });
   var oldStyle = {
     top: element.style.top,
@@ -798,7 +798,7 @@ Effect.Grow = function(element) {
       break;
   }
 
-  return new Effect.Move(element, {
+  return new GapEffect.Move(element, {
     x: initialMoveX,
     y: initialMoveY,
     duration: 0.01,
@@ -806,10 +806,10 @@ Effect.Grow = function(element) {
       effect.element.hide().makeClipping().makePositioned();
     },
     afterFinishInternal: function(effect) {
-      new Effect.Parallel(
-        [ new Effect.Opacity(effect.element, { sync: true, to: 1.0, from: 0.0, transition: options.opacityTransition }),
-          new Effect.Move(effect.element, { x: moveX, y: moveY, sync: true, transition: options.moveTransition }),
-          new Effect.Scale(effect.element, 100, {
+      new GapEffect.Parallel(
+        [ new GapEffect.Opacity(effect.element, { sync: true, to: 1.0, from: 0.0, transition: options.opacityTransition }),
+          new GapEffect.Move(effect.element, { x: moveX, y: moveY, sync: true, transition: options.moveTransition }),
+          new GapEffect.Scale(effect.element, 100, {
             scaleMode: { originalHeight: dims.height, originalWidth: dims.width },
             sync: true, scaleFrom: window.opera ? 1 : 0, transition: options.scaleTransition, restoreAfterFinish: true})
         ], Object.extend({
@@ -825,13 +825,13 @@ Effect.Grow = function(element) {
   });
 };
 
-Effect.Shrink = function(element) {
+GapEffect.Shrink = function(element) {
   element = $(element);
   var options = Object.extend({
     direction: 'center',
-    moveTransition: Effect.Transitions.sinoidal,
-    scaleTransition: Effect.Transitions.sinoidal,
-    opacityTransition: Effect.Transitions.none
+    moveTransition: GapEffect.Transitions.sinoidal,
+    scaleTransition: GapEffect.Transitions.sinoidal,
+    opacityTransition: GapEffect.Transitions.none
   }, arguments[1] || { });
   var oldStyle = {
     top: element.style.top,
@@ -865,10 +865,10 @@ Effect.Shrink = function(element) {
       break;
   }
 
-  return new Effect.Parallel(
-    [ new Effect.Opacity(element, { sync: true, to: 0.0, from: 1.0, transition: options.opacityTransition }),
-      new Effect.Scale(element, window.opera ? 1 : 0, { sync: true, transition: options.scaleTransition, restoreAfterFinish: true}),
-      new Effect.Move(element, { x: moveX, y: moveY, sync: true, transition: options.moveTransition })
+  return new GapEffect.Parallel(
+    [ new GapEffect.Opacity(element, { sync: true, to: 0.0, from: 1.0, transition: options.opacityTransition }),
+      new GapEffect.Scale(element, window.opera ? 1 : 0, { sync: true, transition: options.scaleTransition, restoreAfterFinish: true}),
+      new GapEffect.Move(element, { x: moveX, y: moveY, sync: true, transition: options.moveTransition })
     ], Object.extend({
          beforeStartInternal: function(effect) {
            effect.effects[0].element.makePositioned().makeClipping();
@@ -879,22 +879,22 @@ Effect.Shrink = function(element) {
   );
 };
 
-Effect.Pulsate = function(element) {
+GapEffect.Pulsate = function(element) {
   element = $(element);
   var options    = arguments[1] || { },
     oldOpacity = element.getInlineOpacity(),
-    transition = options.transition || Effect.Transitions.linear,
+    transition = options.transition || GapEffect.Transitions.linear,
     reverser   = function(pos){
       return 1 - transition((-Math.cos((pos*(options.pulses||5)*2)*Math.PI)/2) + .5);
     };
 
-  return new Effect.Opacity(element,
+  return new GapEffect.Opacity(element,
     Object.extend(Object.extend({  duration: 2.0, from: 0,
       afterFinishInternal: function(effect) { effect.element.setStyle({opacity: oldOpacity}); }
     }, options), {transition: reverser}));
 };
 
-Effect.Fold = function(element) {
+GapEffect.Fold = function(element) {
   element = $(element);
   var oldStyle = {
     top: element.style.top,
@@ -902,11 +902,11 @@ Effect.Fold = function(element) {
     width: element.style.width,
     height: element.style.height };
   element.makeClipping();
-  return new Effect.Scale(element, 5, Object.extend({
+  return new GapEffect.Scale(element, 5, Object.extend({
     scaleContent: false,
     scaleX: false,
     afterFinishInternal: function(effect) {
-    new Effect.Scale(element, 1, {
+    new GapEffect.Scale(element, 1, {
       scaleContent: false,
       scaleY: false,
       afterFinishInternal: function(effect) {
@@ -915,10 +915,10 @@ Effect.Fold = function(element) {
   }}, arguments[1] || { }));
 };
 
-Effect.Morph = Class.create(Effect.Base, {
+GapEffect.Morph = Class.create(GapEffect.Base, {
   initialize: function(element) {
     this.element = $(element);
-    if (!this.element) throw(Effect._elementDoesNotExistError);
+    if (!this.element) throw(GapEffect._elementDoesNotExistError);
     var options = Object.extend({
       style: { }
     }, arguments[1] || { });
@@ -1005,7 +1005,7 @@ Effect.Morph = Class.create(Effect.Base, {
   }
 });
 
-Effect.Transform = Class.create({
+GapEffect.Transform = Class.create({
   initialize: function(tracks){
     this.tracks  = [];
     this.options = arguments[1] || { };
@@ -1017,14 +1017,14 @@ Effect.Transform = Class.create({
       var data = track.values().first();
       this.tracks.push($H({
         ids:     track.keys().first(),
-        effect:  Effect.Morph,
+        effect:  GapEffect.Morph,
         options: { style: data }
       }));
     }.bind(this));
     return this;
   },
   play: function(){
-    return new Effect.Parallel(
+    return new GapEffect.Parallel(
       this.tracks.map(function(track){
         var ids = track.get('ids'), effect = track.get('effect'), options = track.get('options');
         var elements = [$(ids) || $$(ids)].flatten();
@@ -1089,21 +1089,21 @@ if (document.defaultView && document.defaultView.getComputedStyle) {
   };
 }
 
-Effect.Methods = {
+GapEffect.Methods = {
   morph: function(element, style) {
     element = $(element);
-    new Effect.Morph(element, Object.extend({ style: style }, arguments[2] || { }));
+    new GapEffect.Morph(element, Object.extend({ style: style }, arguments[2] || { }));
     return element;
   },
   visualEffect: function(element, effect, options) {
     element = $(element);
     var s = effect.dasherize().camelize(), klass = s.charAt(0).toUpperCase() + s.substring(1);
-    new Effect[klass](element, options);
+    new GapEffect[klass](element, options);
     return element;
   },
   highlight: function(element, options) {
     element = $(element);
-    new Effect.Highlight(element, options);
+    new GapEffect.Highlight(element, options);
     return element;
   }
 };
@@ -1111,16 +1111,16 @@ Effect.Methods = {
 $w('fade appear grow shrink fold blindUp blindDown slideUp slideDown '+
   'pulsate shake puff squish switchOff dropOut').each(
   function(effect) {
-    Effect.Methods[effect] = function(element, options){
+	  GapEffect.Methods[effect] = function(element, options){
       element = $(element);
-      Effect[effect.charAt(0).toUpperCase() + effect.substring(1)](element, options);
+      GapEffect[effect.charAt(0).toUpperCase() + effect.substring(1)](element, options);
       return element;
     };
   }
 );
 
 $w('getInlineOpacity forceRerendering setContentZoom collectTextNodes collectTextNodesIgnoreClass getStyles').each(
-  function(f) { Effect.Methods[f] = Element[f]; }
+  function(f) { GapEffect.Methods[f] = Element[f]; }
 );
 
-Element.addMethods(Effect.Methods);
+Element.addMethods(GapEffect.Methods);

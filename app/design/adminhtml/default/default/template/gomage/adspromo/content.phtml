@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 ?>
@@ -15,6 +15,29 @@
 <style type="text/css"> 
 	#window_content{width: 98% !important;}
 </style>
+
+<script type="text/javascript">
+//<![CDATA[
+if (typeof(tinyMceWysiwygSetup) == 'function'){
+	tinyMceWysiwygSetup.prototype.setup = function(mode)
+	{
+	    if (this.config.widget_plugin_src) {
+	        tinymce.PluginManager.load('magentowidget', this.config.widget_plugin_src);
+	    }
+	
+	    if (this.config.plugins) {
+	        (this.config.plugins).each(function(plugin){
+	            tinymce.PluginManager.load(plugin.name, plugin.src);
+	        });
+	    }
+	    
+	    var settings = this.getSettings(mode); 
+	    settings.extended_valid_elements = 'iframe[src|style|width|height|scrolling|marginwidth|marginheight|frameborder],style,script';	
+	    tinyMCE.init(settings);
+	}
+}
+//]]>
+</script> 
 
 <?php $_element = $this->getElement() ?>
 <?php if (!$_element->getNoDisplay()): ?>

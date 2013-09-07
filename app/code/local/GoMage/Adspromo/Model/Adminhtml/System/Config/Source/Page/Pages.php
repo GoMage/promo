@@ -7,16 +7,16 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 	
 class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Page_Pages{
 
     
-    const CART = 'cart';
-    const CHECKOUT = 'checkout';
-    const ACCOUNT = 'customer';
+    const CART = 'checkout/cart';
+    const CHECKOUT = 'checkout/onepage';
+    const ACCOUNT = 'customer/account';
             
     /**
      * Options getter

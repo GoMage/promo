@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -35,34 +35,49 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Wi
     protected function _prepareColumns(){
     	
     	$this->addColumn('id', array(
-            'header'    =>  $this->__('ID'),
-            'align'     =>  'left',
-            'index'     =>  'id',
-            'type'  => 'number',
-            'width' => '50px',
+            'header'    => $this->__('ID'),
+            'align'     => 'left',
+            'index'     => 'id',
+            'type'  	=> 'number',
+            'width' 	=> '50px',
         ));
     	
         $this->addColumn('title', array(
-            'header'    =>  $this->__('Title'),
-            'align'     =>  'left',
-            'index'     =>  'title',
+            'header'    => $this->__('Title'),
+            'align'     => 'left',
+            'index'     => 'title',
         ));
         
         
         $this->addColumn('start_date', array(
-            'header'    =>  $this->__('Start Date'),
-            'align'     =>  'left',
-            'index'     =>  'start_date',
+            'header'    => $this->__('Start Date'),
+            'align'     => 'left',
+            'index'     => 'start_date',
         	'type'      => 'date',
 			'default'   => '--',
         ));
 
         $this->addColumn('end_date', array(
-            'header'    =>  $this->__('End Date'),
-            'align'     =>  'left',
-            'index'     =>  'end_date',
+            'header'    => $this->__('End Date'),
+            'align'     => 'left',
+            'index'     => 'end_date',
         	'type'      => 'date',
 			'default'   => '--',
+        ));
+        
+        $this->addColumn('show_type', array(
+            'header'    => $this->__('Display'),
+            'align'     => 'left',
+            'index'     => 'show_type',
+        	'type'      => 'options',	
+        	'options'	=> GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::toOptionHash(),		
+        ));         
+        
+        $this->addColumn('image_clicks', array(
+            'header'    => $this->__('Clicks'),
+            'align'     => 'left',
+            'index'     => 'image_clicks',
+        	'type'  	=> 'number',
         ));
         
         $this->addColumn('store_id_arr', array(
@@ -72,14 +87,16 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Wi
             'type'          => 'store',
         	'store_all'     => true,
             'store_view'    => true,
-            'sortable'      => true,
-            'filter_index'  => 'store_ids',            
+            'sortable'      => false,
+            'filter_index'  => 'store_id_arr', 
+        	'filter_condition_callback'
+                                => array($this, '_filterStoreCondition'),           
         ));
         
         $this->addColumn('status', array(
-            'header'    =>  $this->__('Status'),
-            'align'     =>  'left',
-            'index'     =>  'status',
+            'header'    => $this->__('Status'),
+            'align'     => 'left',
+            'index'     => 'status',
             'type'      => 'options',
             'options'   => array(
             	0=>$this->__('Disabled'),
@@ -114,12 +131,22 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Wi
         
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('id');                
+        
         $this->getMassactionBlock()->addItem('delete', array(
             'label'     =>  $this->__('Delete Item(s)'),
             'url'       =>  $this->getUrl('*/*/massDelete'),
             'confirm'   =>  $this->__('Are you sure?')
         ));
         
+        $this->getMassactionBlock()->addItem('enable', array(
+            'label'     =>  $this->__('Enable Item(s)'),
+            'url'       =>  $this->getUrl('*/*/massEnable')            
+        ));
+        
+        $this->getMassactionBlock()->addItem('disable', array(
+            'label'     =>  $this->__('Disable Item(s)'),
+            'url'       =>  $this->getUrl('*/*/massDisable')            
+        ));
         
         return $this;
         

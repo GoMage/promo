@@ -1,10 +1,10 @@
-var Window = Class.create();
+var GapWindow = Class.create();
 
-Window.keepMultiModalWindow = false;
-Window.hasEffectLib = (typeof Effect != 'undefined');
-Window.resizeEffectDuration = 0.4;
+GapWindow.keepMultiModalWindow = false;
+GapWindow.hasEffectLib = (typeof GapEffect != 'undefined');
+GapWindow.resizeEffectDuration = 0.4;
 
-Window.prototype = {
+GapWindow.prototype = {
   // Constructor
   // Available parameters : className, blurClassName, title, minWidth, minHeight, maxWidth, maxHeight, width, height, top, left, bottom, right, resizable, zIndex, opacity, recenterAuto, wiredDrag
   //                        hideEffect, showEffect, showEffectOptions, hideEffectOptions, effectOptions, url, draggable, closable, minimizable, maximizable, parent, onload
@@ -34,7 +34,8 @@ Window.prototype = {
     this.options = Object.extend({
       className:         "dialog",
       additionClass:     "",
-      Buttoncolor:       "black",
+      buttonPosition:	 "",
+      buttonColor:       "black",
       windowClassName:   null,
       blurClassName:     null,
       minWidth:          100, 
@@ -45,8 +46,8 @@ Window.prototype = {
       maximizable:       true,
       draggable:         true,
       userData:          null,
-      showEffect:        (Window.hasEffectLib ? Effect.Appear : Element.show),
-      hideEffect:        (Window.hasEffectLib ? Effect.Fade : Element.hide),
+      showEffect:        (GapWindow.hasEffectLib ? GapEffect.Appear : Element.show),
+      hideEffect:        (GapWindow.hasEffectLib ? GapEffect.Fade : Element.hide),
       showEffectOptions: {},
       hideEffectOptions: {},
       effectOptions:     null,
@@ -54,8 +55,10 @@ Window.prototype = {
       title:             "&nbsp;",
       url:               null,
       onload:            Prototype.emptyFunction,
-      width:             200,
-      height:            300,
+      width:             100,
+      height:            0,
+      autoHeight:        false,
+      border_size:       0,
       opacity:           1,
       recenterAuto:      true,
       wiredDrag:         false,
@@ -76,14 +79,14 @@ Window.prototype = {
     if (this.options.effectOptions) {
       Object.extend(this.options.hideEffectOptions, this.options.effectOptions);
       Object.extend(this.options.showEffectOptions, this.options.effectOptions);
-      if (this.options.showEffect == Element.Appear)
+      if (this.options.showEffect == GapEffect.Appear)
         this.options.showEffectOptions.to = this.options.opacity;
     }
-    if (Window.hasEffectLib) {
-      if (this.options.showEffect == Effect.Appear)
+    if (GapWindow.hasEffectLib) {
+      if (this.options.showEffect == GapEffect.Appear)
         this.options.showEffectOptions.to = this.options.opacity;
     
-      if (this.options.hideEffect == Effect.Fade)
+      if (this.options.hideEffect == GapEffect.Fade)
         this.options.hideEffectOptions.from = this.options.opacity;
     }
     if (this.options.hideEffect == Element.hide)
@@ -175,7 +178,7 @@ Window.prototype = {
     if (this.width && this.height)
       this.setSize(this.options.width, this.options.height);
     this.setTitle(this.options.title)
-    Windows.register(this);      
+    GapWindows.register(this);      
   },
   
   // Destructor
@@ -216,7 +219,7 @@ Window.prototype = {
       Element.remove(this.iefix);
 
     Element.remove(this.element);
-    Windows.unregister(this);      
+    GapWindows.unregister(this);      
   },
     
   // Sets close callback, if it sets, it should return true to be able to close the window.
@@ -323,7 +326,7 @@ Window.prototype = {
     this.cookie = [name, expires, path, domain, secure];
     
     // Get cookie
-    var value = WindowUtilities.getCookie(name)
+    var value = GapWindowUtilities.getCookie(name)
     // If exists
     if (value) {
       var values = value.split(',');
@@ -417,7 +420,7 @@ Window.prototype = {
     Event.observe(document, "mousemove", this.eventMouseMove, false);
     
     // Add an invisible div to keep catching mouse event over iframes
-    WindowUtilities.disableScreen('__invisible__', '__invisible__', this.overlayOpacity);
+    GapWindowUtilities.disableScreen('__invisible__', '__invisible__', this.overlayOpacity);
 
     // Stop selection while dragging
     document.body.ondrag = function () { return false; };
@@ -495,7 +498,7 @@ Window.prototype = {
    // endDrag callback
    _endDrag: function(event) {
     // Remove temporary div over iframes
-     WindowUtilities.enableScreen('__invisible__');
+	GapWindowUtilities.enableScreen('__invisible__');
     
     if (this.doResize)
       this._notify("onEndResize");
@@ -520,7 +523,7 @@ Window.prototype = {
 
   _updateLeftConstraint: function(left) {
     if (this.constraint && this.useLeft && this.useTop) {
-      var width = this.options.parent == document.body ? WindowUtilities.getPageSize().windowWidth : this.options.parent.getDimensions().width;
+      var width = this.options.parent == document.body ? GapWindowUtilities.getPageSize().windowWidth : this.options.parent.getDimensions().width;
 
       if (left < this.constraintPad.left)
         left = this.constraintPad.left;
@@ -532,7 +535,7 @@ Window.prototype = {
   
   _updateTopConstraint: function(top) {
     if (this.constraint && this.useLeft && this.useTop) {        
-      var height = this.options.parent == document.body ? WindowUtilities.getPageSize().windowHeight : this.options.parent.getDimensions().height;
+      var height = this.options.parent == document.body ? GapWindowUtilities.getPageSize().windowHeight : this.options.parent.getDimensions().height;
       
       var h = this.height + this.heightN + this.heightS;
 
@@ -546,7 +549,7 @@ Window.prototype = {
   
   _updateWidthConstraint: function(w) {
     if (this.constraint && this.useLeft && this.useTop) {
-      var width = this.options.parent == document.body ? WindowUtilities.getPageSize().windowWidth : this.options.parent.getDimensions().width;
+      var width = this.options.parent == document.body ? GapWindowUtilities.getPageSize().windowWidth : this.options.parent.getDimensions().width;
       var left =  parseFloat(this.element.getStyle("left"));
 
       if (left + w + this.widthE + this.widthW > width - this.constraintPad.right) 
@@ -557,7 +560,7 @@ Window.prototype = {
   
   _updateHeightConstraint: function(h) {
     if (this.constraint && this.useLeft && this.useTop) {
-      var height = this.options.parent == document.body ? WindowUtilities.getPageSize().windowHeight : this.options.parent.getDimensions().height;
+      var height = this.options.parent == document.body ? GapWindowUtilities.getPageSize().windowHeight : this.options.parent.getDimensions().height;
       var top =  parseFloat(this.element.getStyle("top"));
 
       if (top + h + this.heightN + this.heightS > height - this.constraintPad.bottom) 
@@ -585,9 +588,9 @@ Window.prototype = {
     else
       content ="<div id=\"" + id + "_content\" class=\"" +className + "_content\"> </div>";
 
-    var closeDiv = this.options.closable ? "<div class='"+ className +"_close "+className +"_close_"+this.options.Buttoncolor+"' id='"+ id +"_close' onclick='Windows.close(\""+ id +"\", event)'> </div>" : "";
-    var minDiv = this.options.minimizable ? "<div class='"+ className + "_minimize' id='"+ id +"_minimize' onclick='Windows.minimize(\""+ id +"\", event)'> </div>" : "";
-    var maxDiv = this.options.maximizable ? "<div class='"+ className + "_maximize' id='"+ id +"_maximize' onclick='Windows.maximize(\""+ id +"\", event)'> </div>" : "";
+    var closeDiv = this.options.closable ? "<div class='"+ className +"_close "+className +"_close_"+this.options.buttonColor+" "+this.options.buttonPosition+"' id='"+ id +"_close' onclick='GapWindows.close(\""+ id +"\", event)'> </div>" : "";
+    var minDiv = this.options.minimizable ? "<div class='"+ className + "_minimize' id='"+ id +"_minimize' onclick='GapWindows.minimize(\""+ id +"\", event)'> </div>" : "";
+    var maxDiv = this.options.maximizable ? "<div class='"+ className + "_maximize' id='"+ id +"_maximize' onclick='GapWindows.maximize(\""+ id +"\", event)'> </div>" : "";
     var seAttributes = this.options.resizable ? "class='" + className + "_sizer' id='" + id + "_sizer'" : "class='"  + className + "_se'";
     var blank = "../themes/default/blank.gif";
     
@@ -689,21 +692,32 @@ Window.prototype = {
       width = this.options. maxWidth;
 
     
-    if (this.useTop && this.useLeft && Window.hasEffectLib && Effect.ResizeWindow && useEffect) {
-      new Effect.ResizeWindow(this, null, null, width, height, {duration: Window.resizeEffectDuration});
+    if (this.useTop && this.useLeft && GapWindow.hasEffectLib && GapEffect.ResizeWindow && useEffect) {
+      new GapEffect.ResizeWindow(this, null, null, width, height, {duration: GapWindow.resizeEffectDuration});
     } else {
       this.width = width;
       this.height = height;
       var e = this.currentDrag ? this.currentDrag : this.element;
 
-      e.setStyle({width: width + this.widthW + this.widthE + "px"})
-      e.setStyle({height: height  + this.heightN + this.heightS + "px"})
+      e.setStyle({width: width + this.widthW + this.widthE + 'px'});
+      if (this.options.autoHeight){
+    	  e.setStyle({height: 'auto'});
+      }else{      	      
+	      e.setStyle({height: height  + this.heightN + this.heightS + 'px'});
+      }    
 
       // Update content size
       if (!this.currentDrag || this.currentDrag == this.element) {
         var content = $(this.element.id + '_content');
-        content.setStyle({height: height  + 'px'});
-        content.setStyle({width: width  + 'px'});
+        content.setStyle({width:  (width-this.options.border_size)  + 'px'});
+        if (this.options.autoHeight){
+        	content.setStyle({height: 'auto'});
+        	if (this.options.maxHeight){
+        		content.style.maxHeight = this.options.maxHeight + 'px';
+        	}
+        }else{
+        	content.setStyle({height: (height-this.options.border_size)  + 'px'});
+        }
       }
     }
   },
@@ -718,8 +732,8 @@ Window.prototype = {
   
   // Brings window to front
   toFront: function() {
-    if (this.element.style.zIndex < Windows.maxZIndex)  
-      this.setZIndex(Windows.maxZIndex + 1);
+    if (this.element.style.zIndex < GapWindows.maxZIndex)  
+      this.setZIndex(GapWindows.maxZIndex + 1);
     if (this.iefix) 
       this._fixIEOverlapping(); 
   },
@@ -740,11 +754,11 @@ Window.prototype = {
       
   computeBounds: function() {
      if (! this.width || !this.height) {
-      var size = WindowUtilities._computeSize(this.content.innerHTML, this.content.id, this.width, this.height, 0, this.options.className)
+      var size = GapWindowUtilities._computeSize(this.content.innerHTML, this.content.id, this.width, this.height, 0, this.options.className)
       if (this.height)
-        this.width = size + 5
+        this.width = size + 5;
       else
-        this.height = size + 5
+        this.height = size;
     }
 
     this.setSize(this.width, this.height);
@@ -757,20 +771,20 @@ Window.prototype = {
     this.visible = true;
     if (modal) {
       // Hack for Safari !!
-      if (typeof this.overlayOpacity == "undefined") {
+      if (typeof this.overlayOpacity == "undefined") {  
         var that = this;
-        setTimeout(function() {that.show(modal)}, 10);
+        setTimeout(function() {that.show(modal)}, 2000);
         return;
       }
-      Windows.addModalWindow(this);
+      GapWindows.addModalWindow(this);
       
       this.modal = true;      
-      this.setZIndex(Windows.maxZIndex + 1);
-      Windows.unsetOverflow(this);
+      this.setZIndex(GapWindows.maxZIndex + 1);
+      GapWindows.unsetOverflow(this);
     }
     else    
       if (!this.element.style.zIndex) 
-        this.setZIndex(Windows.maxZIndex + 1);        
+        this.setZIndex(GapWindows.maxZIndex + 1);        
       
     // To restore overflow if need be
     if (this.oldStyle)
@@ -785,7 +799,7 @@ Window.prototype = {
       this.options.showEffect(this.element);  
       
     this._checkIEOverlapping();
-    WindowUtilities.focusedWindow = this
+    GapWindowUtilities.focusedWindow = this
     this._notify("onShow");
     if (!Prototype.Browser.IE)
     	$(this.element.id + '_focus_anchor').focus();
@@ -805,10 +819,16 @@ Window.prototype = {
   },
   
   _center: function(top, left) {    
-    var windowScroll = WindowUtilities.getWindowScroll(this.options.parent);    
-    var pageSize = WindowUtilities.getPageSize(this.options.parent);    
+    var windowScroll = GapWindowUtilities.getWindowScroll(this.options.parent);    
+    var pageSize = GapWindowUtilities.getPageSize(this.options.parent);
+    
+    var height = this.height;
+    if ((height == this.options.minHeight) && (height < this.element.getDimensions().height)){
+    	height = this.element.getDimensions().height
+    }
+    
     if (typeof top == "undefined")
-      top = (pageSize.windowHeight - (this.height + this.heightN + this.heightS))/2;
+      top = (pageSize.windowHeight - (height + this.heightN + this.heightS))/2;
     top += windowScroll.top
     
     if (typeof left == "undefined")
@@ -820,8 +840,8 @@ Window.prototype = {
   
   _recenter: function(event) {     
     if (this.centered) {
-      var pageSize = WindowUtilities.getPageSize(this.options.parent);
-      var windowScroll = WindowUtilities.getWindowScroll(this.options.parent);    
+      var pageSize = GapWindowUtilities.getPageSize(this.options.parent);
+      var windowScroll = GapWindowUtilities.getWindowScroll(this.options.parent);    
 
       // Check for this stupid IE that sends dumb events
       if (this.pageSize && this.pageSize.windowWidth == pageSize.windowWidth && this.pageSize.windowHeight == pageSize.windowHeight && 
@@ -830,8 +850,8 @@ Window.prototype = {
       this.pageSize = pageSize;
       this.windowScroll = windowScroll;
       // set height of Overlay to take up whole page and show
-      if ($('overlay_modal')) 
-        $('overlay_modal').setStyle({height: (pageSize.pageHeight + 'px')});
+      if ($('overlay_modal_gap')) 
+        $('overlay_modal_gap').setStyle({height: (pageSize.pageHeight + 'px')});
                   
       if (this.options.recenterAuto)
         this._center(this.centerTop, this.centerLeft);
@@ -843,8 +863,8 @@ Window.prototype = {
   hide: function() {
     this.visible = false;
     if (this.modal) {
-      Windows.removeModalWindow(this);
-      Windows.resetOverflow();
+      GapWindows.removeModalWindow(this);
+      GapWindows.resetOverflow();
     }
     // To avoid bug on scrolling bar
     this.oldStyle = this.getContent().getStyle('overflow') || "auto"
@@ -861,7 +881,7 @@ Window.prototype = {
 
   close: function() {
     // Asks closeCallback if exists
-    if (this.visible) {
+    if (this.visible) {      	
       if (this.options.closeCallback && ! this.options.closeCallback(this)) 
         return;
 
@@ -874,13 +894,36 @@ Window.prototype = {
         else 
           this.options.hideEffectOptions.afterFinish = function() {destroyFunc() }
       }
-      Windows.updateFocusedWindow();
+      GapWindows.updateFocusedWindow();
+      
+      var hasHideEffect = false;      
+      for(var key in this.options.hideEffectOptions){
+    	  if (this.options.hideEffectOptions.hasOwnProperty(key)){
+    		  hasHideEffect = true;
+    		  break;
+    	  }
+      }      
+      if (hasHideEffect){
+    	  var refreshFunc = this.refreshContent.bind(this);
+          if (this.options.hideEffectOptions.afterFinish) {
+            var afterfunc = this.options.hideEffectOptions.afterFinish;
+            this.options.hideEffectOptions.afterFinish = function() {afterfunc();refreshFunc(); }
+          }
+          else 
+            this.options.hideEffectOptions.afterFinish = function() {refreshFunc(); } 
+      }else{    	  
+    	  this.refreshContent();
+      }
       
       this.doNotNotifyHide = true;
-      this.hide();
+      this.hide();      
       this.doNotNotifyHide = false;
-      this._notify("onClose");
+      this._notify("onClose");      
     }
+  },
+  
+  refreshContent: function(){
+	  this.getContent().innerHTML = this.getContent().innerHTML;
   },
   
   minimize: function() {
@@ -896,8 +939,8 @@ Window.prototype = {
       this.r2Height = dh;
       var h  = this.element.getHeight() - dh;
 
-      if (this.useLeft && this.useTop && Window.hasEffectLib && Effect.ResizeWindow) {
-        new Effect.ResizeWindow(this, null, null, null, this.height -dh, {duration: Window.resizeEffectDuration});
+      if (this.useLeft && this.useTop && GapWindow.hasEffectLib && GapEffect.ResizeWindow) {
+        new GapEffect.ResizeWindow(this, null, null, null, this.height -dh, {duration: GapWindow.resizeEffectDuration});
       } else  {
         this.height -= dh;
         this.element.setStyle({height: h + "px"});
@@ -914,8 +957,8 @@ Window.prototype = {
       
       var dh = this.r2Height;
       this.r2Height = null;
-      if (this.useLeft && this.useTop && Window.hasEffectLib && Effect.ResizeWindow) {
-        new Effect.ResizeWindow(this, null, null, null, this.height + dh, {duration: Window.resizeEffectDuration});
+      if (this.useLeft && this.useTop && GapWindow.hasEffectLib && GapEffect.ResizeWindow) {
+        new GapEffect.ResizeWindow(this, null, null, null, this.height + dh, {duration: GapWindow.resizeEffectDuration});
       }
       else {
         var h  = this.element.getHeight() + dh;
@@ -949,10 +992,10 @@ Window.prototype = {
     }
     else {
       this._storeLocation();
-      Windows.unsetOverflow(this);
+      GapWindows.unsetOverflow(this);
       
-      var windowScroll = WindowUtilities.getWindowScroll(this.options.parent);
-      var pageSize = WindowUtilities.getPageSize(this.options.parent);    
+      var windowScroll = GapWindowUtilities.getWindowScroll(this.options.parent);
+      var pageSize = GapWindowUtilities.getPageSize(this.options.parent);    
       var left = windowScroll.left;
       var top = windowScroll.top;
       
@@ -975,8 +1018,8 @@ Window.prototype = {
       var width = pageSize.windowWidth - this.widthW - this.widthE;
       var height= pageSize.windowHeight - this.heightN - this.heightS;
 
-      if (this.useLeft && this.useTop && Window.hasEffectLib && Effect.ResizeWindow) {
-        new Effect.ResizeWindow(this, top, left, width, height, {duration: Window.resizeEffectDuration});
+      if (this.useLeft && this.useTop && GapWindow.hasEffectLib && GapEffect.ResizeWindow) {
+        new GapEffect.ResizeWindow(this, top, left, width, height, {duration: GapWindow.resizeEffectDuration});
       }
       else {
         this.setSize(width, height);
@@ -1009,7 +1052,7 @@ Window.prototype = {
   
   setZIndex: function(zindex) {
     this.element.setStyle({zIndex: zindex});
-    Windows.updateZindex(zindex, this);
+    GapWindows.updateZindex(zindex, this);
   },
 
   setTitle: function(newTitle) {
@@ -1124,15 +1167,15 @@ Window.prototype = {
       this.useLeft = this.storedLocation.useLeft;
       this.useTop = this.storedLocation.useTop;
       
-      if (this.useLeft && this.useTop && Window.hasEffectLib && Effect.ResizeWindow)
-        new Effect.ResizeWindow(this, this.storedLocation.top, this.storedLocation.left, this.storedLocation.width, this.storedLocation.height, {duration: Window.resizeEffectDuration});
+      if (this.useLeft && this.useTop && GapWindow.hasEffectLib && GapEffect.ResizeWindow)
+        new GapEffect.ResizeWindow(this, this.storedLocation.top, this.storedLocation.left, this.storedLocation.width, this.storedLocation.height, {duration: GapWindow.resizeEffectDuration});
       else {
         this.element.setStyle(this.useLeft ? {left: this.storedLocation.left} : {right: this.storedLocation.right});
         this.element.setStyle(this.useTop ? {top: this.storedLocation.top} : {bottom: this.storedLocation.bottom});
         this.setSize(this.storedLocation.width, this.storedLocation.height);
       }
       
-      Windows.resetOverflow();
+      GapWindows.resetOverflow();
       this._removeStoreLocation();
     }
   },
@@ -1157,7 +1200,7 @@ Window.prototype = {
       value += "," + (this.storedLocation ? this.storedLocation.height : this.height);
       value += "," + this.isMinimized();
       value += "," + this.isMaximized();
-      WindowUtilities.setCookie(value, this.cookie)
+      GapWindowUtilities.setCookie(value, this.cookie)
     }
   },
   
@@ -1185,7 +1228,7 @@ Window.prototype = {
     var dim = this.element.getDimensions();
     this.wiredElement.setStyle({width: dim.width + "px", height: dim.height +"px"});
 
-    this.wiredElement.setStyle({zIndex: Windows.maxZIndex+30});
+    this.wiredElement.setStyle({zIndex: GapWindows.maxZIndex+30});
     return this.wiredElement;
   },
   
@@ -1216,12 +1259,12 @@ Window.prototype = {
     if (this.options[eventName])
       this.options[eventName](this);
     else
-      Windows.notify(eventName, this);
+    	GapWindows.notify(eventName, this);
   }
 };
 
 // Windows containers, register all page windows
-var Windows = {
+var GapWindows = {
   windows: [],
   modalWindows: [],
   observers: [],
@@ -1267,20 +1310,20 @@ var Windows = {
   addModalWindow: function(win) {
     // Disable screen if first modal window
     if (this.modalWindows.length == 0) {
-      WindowUtilities.disableScreen(win.options.className, 'overlay_modal', win.overlayOpacity, win.getId(), win.options.parent);
+    	GapWindowUtilities.disableScreen(win.options.className, 'overlay_modal_gap', win.overlayOpacity, win.getId(), win.options.parent);
     }
     else {
       // Move overlay over all windows
-      if (Window.keepMultiModalWindow) {
-        $('overlay_modal').style.zIndex = Windows.maxZIndex + 1;
-        Windows.maxZIndex += 1;
-        WindowUtilities._hideSelect(this.modalWindows.last().getId());
+      if (GapWindow.keepMultiModalWindow) {
+        $('overlay_modal_gap').style.zIndex = GapWindows.maxZIndex + 1;
+        GapWindows.maxZIndex += 1;
+        GapWindowUtilities._hideSelect(this.modalWindows.last().getId());
       }
       // Hide current modal window
       else
         this.modalWindows.last().element.hide();
       // Fucking IE select issue
-      WindowUtilities._showSelect(win.getId());
+      GapWindowUtilities._showSelect(win.getId());
     }      
     this.modalWindows.push(win);    
   },
@@ -1290,11 +1333,11 @@ var Windows = {
     
     // No more modal windows
     if (this.modalWindows.length == 0)
-      WindowUtilities.enableScreen();     
+       GapWindowUtilities.enableScreen();     
     else {
-      if (Window.keepMultiModalWindow) {
+      if (GapWindow.keepMultiModalWindow) {
         this.modalWindows.last().toFront();
-        WindowUtilities._showSelect(this.modalWindows.last().getId());        
+        GapWindowUtilities._showSelect(this.modalWindows.last().getId());        
       }
       else
         this.modalWindows.last().element.show();
@@ -1313,11 +1356,11 @@ var Windows = {
   
   // Closes all windows
   closeAll: function() {  
-    this.windows.each( function(w) {Windows.close(w.getId())} );
+    this.windows.each( function(w) {GapWindows.close(w.getId())} );
   },
   
   closeAllModalWindows: function() {
-    WindowUtilities.enableScreen();     
+	GapWindowUtilities.enableScreen();     
     this.modalWindows.each( function(win) {if (win) win.close()});    
   },
 
@@ -1339,9 +1382,14 @@ var Windows = {
 
   // Closes a window with its id
   close: function(id, event) {
-    var win = this.getWindow(id);
-    if (win) 
-      win.close();
+    var win = this.getWindow(id);    
+    if (win){
+      win.close();	
+      var win_id = id.replace("gomage-ads-window-","");
+      if (win_id){
+    	  AddAdsClick(win_id, 1);
+      }      
+    }  
     if (event)
       Event.stop(event);
   },
@@ -1392,7 +1440,7 @@ var Windows = {
   }
 };
 
-var Dialog = {
+var GapDialog = {
   dialogId: null,
   onCompleteFunc: null,
   callFunc: null, 
@@ -1401,7 +1449,7 @@ var Dialog = {
   confirm: function(content, parameters) {
     // Get Ajax return before
     if (content && typeof content != "string") {
-      Dialog._runAjaxRequest(content, parameters, Dialog.confirm);
+    	GapDialog._runAjaxRequest(content, parameters, GapDialog.confirm);
       return 
     }
     content = content || "";
@@ -1421,8 +1469,8 @@ var Dialog = {
     var content = "\
       <div class='" + parameters.className + "_message'>" + content  + "</div>\
         <div class='" + parameters.className + "_buttons'>\
-          <input type='button' value='" + okLabel + "' onclick='Dialog.okCallback()' " + okButtonClass + "/>\
-          <input type='button' value='" + cancelLabel + "' onclick='Dialog.cancelCallback()' " + cancelButtonClass + "/>\
+          <input type='button' value='" + okLabel + "' onclick='GapDialog.okCallback()' " + okButtonClass + "/>\
+          <input type='button' value='" + cancelLabel + "' onclick='GapDialog.cancelCallback()' " + cancelButtonClass + "/>\
         </div>\
     ";
     return this._openDialog(content, parameters)
@@ -1431,7 +1479,7 @@ var Dialog = {
   alert: function(content, parameters) {
     // Get Ajax return before
     if (content && typeof content != "string") {
-      Dialog._runAjaxRequest(content, parameters, Dialog.alert);
+    	GapDialog._runAjaxRequest(content, parameters, GapDialog.alert);
       return 
     }
     content = content || "";
@@ -1449,7 +1497,7 @@ var Dialog = {
     var content = "\
       <div class='" + parameters.className + "_message'>" + content  + "</div>\
         <div class='" + parameters.className + "_buttons'>\
-          <input type='button' value='" + okLabel + "' onclick='Dialog.okCallback()' " + okButtonClass + "/>\
+          <input type='button' value='" + okLabel + "' onclick='GapDialog.okCallback()' " + okButtonClass + "/>\
         </div>";                  
     return this._openDialog(content, parameters)
   },
@@ -1457,7 +1505,7 @@ var Dialog = {
   info: function(content, parameters) {
     // Get Ajax return before
     if (content && typeof content != "string") {
-      Dialog._runAjaxRequest(content, parameters, Dialog.info);
+    	GapDialog._runAjaxRequest(content, parameters, GapDialog.info);
       return 
     }
     content = content || "";
@@ -1484,14 +1532,14 @@ var Dialog = {
   },
   
   closeInfo: function() {
-    Windows.close(this.dialogId);
+	  GapWindows.close(this.dialogId);
   },
   
   _openDialog: function(content, parameters) {
     var className = parameters.className;
     
     if (! parameters.height && ! parameters.width) {
-      parameters.width = WindowUtilities.getPageSize(parameters.options.parent || document.body).pageWidth / 2;
+      parameters.width = GapWindowUtilities.getPageSize(parameters.options.parent || document.body).pageWidth / 2;
     }
     if (parameters.id)
       this.dialogId = parameters.id;
@@ -1503,7 +1551,7 @@ var Dialog = {
 
     // compute height or width if need be
     if (! parameters.height || ! parameters.width) {
-      var size = WindowUtilities._computeSize(content, this.dialogId, parameters.width, parameters.height, 5, className)
+      var size = GapWindowUtilities._computeSize(content, this.dialogId, parameters.width, parameters.height, 5, className)
       if (parameters.height)
         parameters.width = size + 5
       else
@@ -1516,7 +1564,7 @@ var Dialog = {
     parameters.draggable   = parameters.draggable || false;
     parameters.closable    = parameters.closable || false;
 
-    var win = new Window(parameters);
+    var win = new GapWindow(parameters);
     win.getContent().innerHTML = content;
     
     win.showCenter(true, parameters.top, parameters.left);  
@@ -1529,22 +1577,22 @@ var Dialog = {
   },
   
   _getAjaxContent: function(originalRequest)  {
-      Dialog.callFunc(originalRequest.responseText, Dialog.parameters)
+	  GapDialog.callFunc(originalRequest.responseText, GapDialog.parameters)
   },
   
   _runAjaxRequest: function(message, parameters, callFunc) {
     if (message.options == null)
       message.options = {}  
-    Dialog.onCompleteFunc = message.options.onComplete;
-    Dialog.parameters = parameters;
-    Dialog.callFunc = callFunc;
+    GapDialog.onCompleteFunc = message.options.onComplete;
+    GapDialog.parameters = parameters;
+    GapDialog.callFunc = callFunc;
     
-    message.options.onComplete = Dialog._getAjaxContent;
+    message.options.onComplete = GapDialog._getAjaxContent;
     new Ajax.Request(message.url, message.options);
   },
   
   okCallback: function() {
-    var win = Windows.focusedWindow;
+    var win = GapWindows.focusedWindow;
     if (!win.okCallback || win.okCallback(win)) {
       // Remove onclick on button
       $$("#" + win.getId()+" input").each(function(element) {element.onclick=null;})
@@ -1553,7 +1601,7 @@ var Dialog = {
   },
 
   cancelCallback: function() {
-    var win = Windows.focusedWindow;
+    var win = GapWindows.focusedWindow;
     // Remove onclick on button
     $$("#" + win.getId()+" input").each(function(element) {element.onclick=null})
     win.close();
@@ -1577,7 +1625,7 @@ if (Prototype.Browser.WebKit) {
   Prototype.Browser.WebKitVersion = parseFloat(array[1]);
 }
 
-var WindowUtilities = {  
+var GapWindowUtilities = {  
   // From dragdrop.js
   getWindowScroll: function(parent) {
     var T, L, W, H;
@@ -1672,39 +1720,39 @@ var WindowUtilities = {
   },
 
   disableScreen: function(className, overlayId, overlayOpacity, contentId, parent) {
-    WindowUtilities.initLightbox(overlayId, className, function() {this._disableScreen(className, overlayId, overlayOpacity, contentId)}.bind(this), parent || document.body);
+	  GapWindowUtilities.initLightbox(overlayId, className, function() {this._disableScreen(className, overlayId, overlayOpacity, contentId)}.bind(this), parent || document.body);
   },
 
   _disableScreen: function(className, overlayId, overlayOpacity, contentId) {
     // prep objects
     var objOverlay = $(overlayId);
 
-    var pageSize = WindowUtilities.getPageSize(objOverlay.parentNode);
+    var pageSize = GapWindowUtilities.getPageSize(objOverlay.parentNode);
 
     // Hide select boxes as they will 'peek' through the image in IE, store old value
     if (contentId && Prototype.Browser.IE) {
-      WindowUtilities._hideSelect();
-      WindowUtilities._showSelect(contentId);
+    	GapWindowUtilities._hideSelect();
+    	GapWindowUtilities._showSelect(contentId);
     }  
   
     // set height of Overlay to take up whole page and show
     objOverlay.style.height = (pageSize.pageHeight + 'px');
     objOverlay.style.display = 'none'; 
-    if (overlayId == "overlay_modal" && Window.hasEffectLib && Windows.overlayShowEffectOptions) {
+    if (overlayId == "overlay_modal_gap" && GapWindow.hasEffectLib && GapWindows.overlayShowEffectOptions) {
       objOverlay.overlayOpacity = overlayOpacity;
-      new Effect.Appear(objOverlay, Object.extend({from: 0, to: overlayOpacity}, Windows.overlayShowEffectOptions));
+      new GapEffect.Appear(objOverlay, Object.extend({from: 0, to: overlayOpacity}, GapWindows.overlayShowEffectOptions));
     }
     else
       objOverlay.style.display = "block";
   },
   
   enableScreen: function(id) {
-    id = id || 'overlay_modal';
+    id = id || 'overlay_modal_gap';
     var objOverlay =  $(id);
     if (objOverlay) {
       // hide lightbox and overlay
-      if (id == "overlay_modal" && Window.hasEffectLib && Windows.overlayHideEffectOptions)
-        new Effect.Fade(objOverlay, Object.extend({from: objOverlay.overlayOpacity, to:0}, Windows.overlayHideEffectOptions));
+      if (id == "overlay_modal_gap" && GapWindow.hasEffectLib && GapWindows.overlayHideEffectOptions)
+        new GapEffect.Fade(objOverlay, Object.extend({from: objOverlay.overlayOpacity, to:0}, GapWindows.overlayHideEffectOptions));
       else {
         objOverlay.style.display = 'none';
         objOverlay.parentNode.removeChild(objOverlay);
@@ -1712,7 +1760,7 @@ var WindowUtilities = {
       
       // make select boxes visible using old value
       if (id != "__invisible__") 
-        WindowUtilities._showSelect();
+    	  GapWindowUtilities._showSelect();
     }
   },
 
@@ -1720,7 +1768,7 @@ var WindowUtilities = {
     if (Prototype.Browser.IE) {
       id = id ==  null ? "" : "#" + id + " ";
       $$(id + 'select').each(function(element) {
-        if (! WindowUtilities.isDefined(element.oldVisibility)) {
+        if (! GapWindowUtilities.isDefined(element.oldVisibility)) {
           element.oldVisibility = element.style.visibility ? element.style.visibility : "visible";
           element.style.visibility = "hidden";
         }
@@ -1732,7 +1780,7 @@ var WindowUtilities = {
     if (Prototype.Browser.IE) {
       id = id ==  null ? "" : "#" + id + " ";
       $$(id + 'select').each(function(element) {
-        if (WindowUtilities.isDefined(element.oldVisibility)) {
+        if (GapWindowUtilities.isDefined(element.oldVisibility)) {
           // Why?? Ask IE
           try {
             element.style.visibility = element.oldVisibility;
@@ -1761,8 +1809,8 @@ var WindowUtilities = {
   initLightbox: function(id, className, doneHandler, parent) {
     // Already done, just update zIndex
     if ($(id)) {
-      Element.setStyle(id, {zIndex: Windows.maxZIndex + 1});
-      Windows.maxZIndex++;
+      Element.setStyle(id, {zIndex: GapWindows.maxZIndex + 1});
+      GapWindows.maxZIndex++;
       doneHandler();
     }
     // create overlay div and hardcode some functional styles (aesthetic styles are in CSS file)
@@ -1774,23 +1822,23 @@ var WindowUtilities = {
       objOverlay.style.position = 'absolute';
       objOverlay.style.top = '0';
       objOverlay.style.left = '0';
-      objOverlay.style.zIndex = Windows.maxZIndex + 1;
-      Windows.maxZIndex++;
+      objOverlay.style.zIndex = GapWindows.maxZIndex + 1;
+      GapWindows.maxZIndex++;
       objOverlay.style.width = '100%';
       objOverlay.onmousedown = function()
       {
-    	  Windows.windows.each( 
+    	  GapWindows.windows.each( 
     				function(w) 
     				{
     					if (w.getId() && w.isVisible() && w.modal)
     					{							
-    						Windows.close(w.getId());						    							
+    						GapWindows.close(w.getId());						    							
     					}	
     				} 
     		);
       };
       parent.insertBefore(objOverlay, parent.firstChild);
-      if (Prototype.Browser.WebKit && id == "overlay_modal") {
+      if (Prototype.Browser.WebKit && id == "overlay_modal_gap") {
         setTimeout(function() {doneHandler()}, 10);
       }
       else

@@ -1,9 +1,20 @@
+ /**
+ * GoMage Ads & Promo Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2011 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.1
+ * @since        Class available since Release 1.0
+ */
+
 document.observe("dom:loaded", function() {
   $$('img.gomage-ads-baseimage').invoke('observe', 'mouseover', baseImageHide);  
   $$('img.gomage-ads-alternativeimage').invoke('observe', 'mouseout', baseImageShow);  
   AdsCreateWindows();
 });
-
 
 function createImageEffect(image, effect, show, key, base)
 {
@@ -15,16 +26,16 @@ function createImageEffect(image, effect, show, key, base)
 				
 			break;	
 		  	case '1':
-		  		new Effect.Appear(image.id);
+		  		new GapEffect.Appear(image.id);
 		  	break;		  	
 		  	case '2':
-		  		new Effect.BlindDown(image.id);	
+		  		new GapEffect.BlindDown(image.id);	
 		  	break;
 		  	case '4':		  				  		
 		  		image.show();
 		  	break;
 		  	case '5':		  				  		
-		  		new Effect.Grow(image.id);
+		  		new GapEffect.Grow(image.id);
 		  	break;
 		  	case '6':
 		  		var _w = 0;
@@ -39,7 +50,7 @@ function createImageEffect(image, effect, show, key, base)
 		  			_w = gomage_image_configs[key]['alt_effect_width'];
 		  			_h = gomage_image_configs[key]['alt_effect_height'];
 		  		}	
-		  		new Effect.Morph(image.id, {
+		  		new GapEffect.Morph(image.id, {
 		  			style: {
 		  			width: _w + 'px',
 		  			height: _h + 'px'
@@ -87,20 +98,20 @@ function baseImageHide(event)
 					ShowAdsWindow(alternativewindow_id);
 				break;	
 			  	case '1':
-			  		new Effect.Fade(baseimage.id, {beforeStart: function(){}, afterFinish: function(){ ShowAdsWindow(alternativewindow_id) } });
+			  		new GapEffect.Fade(baseimage.id, {beforeStart: function(){}, afterFinish: function(){ ShowAdsWindow(alternativewindow_id) } });
 			  	break;		  	
 			  	case '2':
-			  		new Effect.BlindUp(baseimage.id, {beforeStart: function(){}, afterFinish: function(){ ShowAdsWindow(alternativewindow_id) } });
+			  		new GapEffect.BlindUp(baseimage.id, {beforeStart: function(){}, afterFinish: function(){ ShowAdsWindow(alternativewindow_id) } });
 			  	break;			
 			  	case '4':		  		
 			  		baseimage.hide();
 			  		ShowAdsWindow(alternativewindow_id);
 			  	break;
 			  	case '5':
-			  		new Effect.Shrink(baseimage.id, {beforeStart: function(){}, afterFinish: function(){ ShowAdsWindow(alternativewindow_id) } });			  		
+			  		new GapEffect.Shrink(baseimage.id, {beforeStart: function(){}, afterFinish: function(){ ShowAdsWindow(alternativewindow_id) } });			  		
 			  	break;
 			  	case '6':
-			  		new Effect.Morph(baseimage.id, 
+			  		new GapEffect.Morph(baseimage.id, 
 			  			{
 				  		  style: {
 				  			width: gomage_image_configs[baseimage.id]['effect_width_hide'] + 'px',
@@ -128,7 +139,7 @@ function baseImageHide(event)
 					createImageEffect(alternativeimage, gomage_image_configs[baseimage.id]['alternative_image_effect'], true, baseimage.id, false);
 				break;	
 			  	case '1':
-			  		new Effect.Fade(baseimage.id, 
+			  		new GapEffect.Fade(baseimage.id, 
 		  				{
 		  			      beforeStart: function(){}, 
 		  			      afterFinish: function(){ 
@@ -137,7 +148,7 @@ function baseImageHide(event)
 		  			    });
 			  	break;		  	
 			  	case '2':
-			  		new Effect.BlindUp(baseimage.id, 
+			  		new GapEffect.BlindUp(baseimage.id, 
 			  			{
 			  			  beforeStart: function(){}, 
 			  			  afterFinish: function(){ 
@@ -150,7 +161,7 @@ function baseImageHide(event)
 			  		createImageEffect(alternativeimage, gomage_image_configs[baseimage.id]['alternative_image_effect'], true, baseimage.id, false);
 			  	break;
 			  	case '5':
-			  		new Effect.Shrink(baseimage.id, 
+			  		new GapEffect.Shrink(baseimage.id, 
 			  			{
 			  			  beforeStart: function(){}, 
 			  			  afterFinish: function(){ 
@@ -159,7 +170,7 @@ function baseImageHide(event)
 			  			});
 			  	break;
 			  	case '6':
-			  		new Effect.Morph(baseimage.id, 
+			  		new GapEffect.Morph(baseimage.id, 
 			  			{
 				  		  style: {
 				  			width: gomage_image_configs[baseimage.id]['effect_width_hide'] + 'px',
@@ -196,7 +207,7 @@ function baseImageShow(event)
 				createImageEffect(baseimage, gomage_image_configs[baseimage.id]['image_effect'], true, baseimage.id, true);
 			break;
 		  	case '1':
-		  		new Effect.Fade(alternativeimage.id, 
+		  		new GapEffect.Fade(alternativeimage.id, 
 		  				{
 		  			      beforeStart: function(){}, 
 		  			      afterFinish: function(){ 
@@ -205,7 +216,7 @@ function baseImageShow(event)
 		  			    });
 		  	break;		  	
 		  	case '2':
-		  		new Effect.BlindUp(alternativeimage.id, 
+		  		new GapEffect.BlindUp(alternativeimage.id, 
 		  			{
 		  			   beforeStart: function(){}, 
 		  			   afterFinish: function(){ 
@@ -218,7 +229,7 @@ function baseImageShow(event)
 		  		createImageEffect(baseimage, gomage_image_configs[baseimage.id]['image_effect'], true, baseimage.id, true);
 		  	break;	
 		  	case '5':
-		  		new Effect.Shrink(alternativeimage.id, 
+		  		new GapEffect.Shrink(alternativeimage.id, 
 		  			{
 		  			   beforeStart: function(){}, 
 		  			   afterFinish: function(){ 
@@ -227,7 +238,7 @@ function baseImageShow(event)
 		  			});
 		  	break;
 		  	case '6':
-		  		new Effect.Morph(alternativeimage.id, 
+		  		new GapEffect.Morph(alternativeimage.id, 
 		  			{
 			  		   style: {
 			  			width: gomage_image_configs[baseimage.id]['alt_effect_width_hide'] + 'px',
@@ -253,16 +264,16 @@ function getAdsWindowEffect(show, effect)
 	switch (effect)
 	{
 	  	case '1':
-	  		return (show ? Effect.Appear : Effect.Fade);	  		
+	  		return (show ? GapEffect.Appear : GapEffect.Fade);	  		
 	  	break;		  	
 	  	case '2':
-	  		return (show ? Effect.BlindDown : Effect.BlindUp);	  		
+	  		return (show ? GapEffect.BlindDown : GapEffect.BlindUp);	  		
 	  	break;	  	
 	  	case '5':
-	  		return (show ? Effect.Grow : Effect.Shrink);	  
+	  		return (show ? GapEffect.Grow : GapEffect.Shrink);	  
 	  	break;
 	  	case '6':
-	  		return (show ? Effect.SlideDown : Effect.SlideUp);
+	  		return (show ? GapEffect.SlideDown : GapEffect.SlideUp);
 	  	break;	
 	  	default:
 	  		return (show ? Element.show : Element.hide);	
@@ -312,16 +323,20 @@ function getAdsWindowEffectOptions(show, effect, key)
 
 function AdsCreateWindows()
 {	
-	for (var key in gomage_window_configs) 
-	{		
-		var tmp_win = new Window(key, 
-				{ads_id: gomage_window_configs[key]['id'],
+	for (var key in gomage_window_configs)
+	{
+	  if (gomage_window_configs.hasOwnProperty(key)) {
+		var window_option = {ads_id: gomage_window_configs[key]['id'],
 			     className: "gomage_aap",
 			     additionClass: (gomage_window_configs[key]['window_position'] == '0' ? "" : "gomage_aap_dialog_not_center"),
-			     Buttoncolor: gomage_window_configs[key]['image_button_color'],
+			     buttonColor: gomage_window_configs[key]['image_button_color'],
+			     buttonPosition: gomage_window_configs[key]['window_button_position'],
 			     title: gomage_window_configs[key]['title'], 
 			     width: gomage_window_configs[key]['window_width'], 
-			     height: gomage_window_configs[key]['window_height'], 
+			     height: (gomage_window_configs[key]['window_height_type'] == '1' ? 0 : gomage_window_configs[key]['window_height']),
+			     maxHeight: (gomage_window_configs[key]['window_height_type'] == '1' ? gomage_window_configs[key]['window_height'] : 0),
+			     autoHeight: (gomage_window_configs[key]['window_height_type'] == '1'),
+			     border_size: gomage_window_configs[key]['window_border_size'],
 			     top: (gomage_window_configs[key]['top'] != null ? gomage_window_configs[key]['top'] : undefined), 
 			     right: (gomage_window_configs[key]['right'] != null ? gomage_window_configs[key]['right'] : undefined),
 			     bottom: (gomage_window_configs[key]['bottom'] != null ? gomage_window_configs[key]['bottom'] : undefined), 
@@ -330,7 +345,8 @@ function AdsCreateWindows()
 			     hideEffect: getAdsWindowEffect(false, gomage_window_configs[key]['window_effect']),
 			     showEffectOptions: getAdsWindowEffectOptions(true, gomage_window_configs[key]['window_effect'], key),
 			     hideEffectOptions: getAdsWindowEffectOptions(false, gomage_window_configs[key]['window_effect'], key)
-		}); 
+		};
+		var tmp_win = new GapWindow(key, window_option); 
 		tmp_win.getContent().innerHTML = gomage_window_configs[key]['window_content'];				
 		
 		if (gomage_window_configs[key]['window_loaded'] == '1')
@@ -376,16 +392,16 @@ function AdsCreateWindows()
 							 baseimage.show();		
 						break;	
 					  	case '1':
-					  		 new Effect.Appear(baseimage.id);
+					  		 new GapEffect.Appear(baseimage.id);
 					  	break;		  	
 					  	case '2':
-					  		 new Effect.BlindDown(baseimage.id);
+					  		 new GapEffect.BlindDown(baseimage.id);
 					  	break;					  	
 					  	case '4':		  		
 					  		 baseimage.show();
 					  	break;
 					  	case '5':
-					  		 new Effect.Grow(baseimage.id);
+					  		 new GapEffect.Grow(baseimage.id);
 					  	break;
 					  	case '6':
 					  		createImageEffect(baseimage, gomage_image_configs[baseimage.id]['image_effect'], true, baseimage.id, true);
@@ -395,16 +411,15 @@ function AdsCreateWindows()
 				
 			};	
 		}	
-		
-	}	
+	}
+  }
 }
 
 var timer = null;
 
-
 function HideAdsWindow()
 {
-	Windows.windows.each( 
+	GapWindows.windows.each( 
 			function(w) 
 			{
 				if (w.getId() && w.isVisible())
@@ -412,7 +427,7 @@ function HideAdsWindow()
 					if (gomage_window_configs[w.getId()]['window_timer'])
 					{
 						gomage_window_configs[w.getId()]['window_timer'] = false;
-						Windows.close(w.getId());						
+						GapWindows.close(w.getId());						
 					}	
 				}	
 			} 
@@ -422,19 +437,19 @@ function HideAdsWindow()
 
 function ShowAdsWindow(id)
 {
-	var win = Windows.getWindow(id);
+	var win = GapWindows.getWindow(id);
 	if (win)
 	{		
 		if (!win.isVisible())
 		{
-			Windows.windows.each( 
+			GapWindows.windows.each( 
 					function(w) 
 					{
 						if ((w.getId() != id) && w.isVisible())
 						{							
 							if (gomage_window_configs[w.getId()]['window_close_selected'] == '1')
 							{
-								Windows.close(w.getId());
+								GapWindows.close(w.getId());
 							}	
 						}	
 					} 
@@ -446,4 +461,32 @@ function ShowAdsWindow(id)
 				win.show(gomage_window_configs[id]['window_backgroundview']);		
 		}	
 	}		
+}
+
+function AddAdsClick(id, is_window){
+	
+	var params = {id: id,
+				  is_window: is_window};
+	
+	var request = new Ajax.Request(gomage_ads_click_url,
+	{
+	    method:'post',
+	    parameters:params,
+	    onSuccess:function(transport){
+	    	
+	    	var response = eval('('+(transport.responseText || false)+')');
+	    	
+	    	if (response.url){
+	    		if (response.new_window){
+	    			window.open(response.url);
+	    		}else{
+	    			window.location.href = response.url; 
+	    		}
+	    	}
+	    },
+	    onFailure: function(){	    	
+	    }
+	});
+
+	
 }

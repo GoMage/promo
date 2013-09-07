@@ -8,7 +8,8 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
+ * @since        Class available since Release 1.0
  */
  -->
 <layout version="1.0">
@@ -19,13 +20,17 @@
     </gomage_adspromo_adminhtml_items_index>
     <gomage_adspromo_adminhtml_items_edit>
     	<update handle="editor"/>
-    	<reference name="head">    	
+    	<reference name="head">
+    		<action method="addJs"><script>jscolor/jscolor.js</script></action>
+    		<action method="addJs"><script>jscolor/jscolor/jscolor.js</script></action>    	
     		<action method="addJs"><script>gomage/adspromo-admin.js</script></action>    		
     	</reference> 
     </gomage_adspromo_adminhtml_items_edit>
     <gomage_adspromo_adminhtml_items_new>
     	<update handle="editor"/>
     	<reference name="head">    	
+    		<action method="addJs"><script>jscolor/jscolor.js</script></action>
+    		<action method="addJs"><script>jscolor/jscolor/jscolor.js</script></action>
     		<action method="addJs"><script>gomage/adspromo-admin.js</script></action>    		
     	</reference>	        
     </gomage_adspromo_adminhtml_items_new>

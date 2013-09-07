@@ -1,0 +1,32 @@
+<?php
+/**
+ * GoMage Ads & Promo Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2011 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.1
+ * @since        Class available since Release 1.1
+ */
+?>
+<style type="text/css">
+	
+	<?php foreach ($this->getItems() as $item): ?>
+	  #gomage-ads-window-<?php echo $item->getId() ?> td.gomage_aap_content{	
+			<?php
+				$size = intval($item->getData('window_border_size'));
+				$color = $item->getData('window_border_color'); 
+				if($color){
+					$color = Mage::helper('gomage_adspromo')->formatColor($color);
+				}else{
+					$color = '#000000';
+				}
+			?>		  	
+			border: <?php echo $size ?>px solid <?php echo $color; ?>; 
+  			padding: <?php echo intval($item->getData('window_indent_text')); ?>px;
+  	   }
+	<?php endforeach; ?>
+  
+</style>

@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -44,11 +44,17 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit_Tabs extends Mage_Adminhtml_Blo
         ));
         
         $this->addTab('advanced_section', array(
-            'label'     =>  $this->__('Advanced Settings'),
-            'title'     =>  $this->__('Advanced Settings'),
+            'label'     =>  $this->__('Display Settings'),
+            'title'     =>  $this->__('Display Settings'),
             'content'   =>  $this->getLayout()->createBlock('gomage_adspromo/adminhtml_items_edit_tab_advanced')->toHtml(),
         ));
-	        
+        
+        $this->addTab('products_section', array(
+            'label'     =>  $this->__('Promo Products'),
+            'title'     =>  $this->__('Promo Products'),
+            'content'   =>  $this->getLayout()->createBlock('gomage_adspromo/adminhtml_items_edit_tab_products')->toHtml(),
+        ));
+        	        
         
         if($tabId = addslashes(htmlspecialchars($this->getRequest()->getParam('tab')))){
         	

@@ -8,7 +8,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
  -->
@@ -22,6 +22,7 @@
     		<action method="addJs"><script>gomage/adspromo-effects.js</script></action>
     		<action method="addJs"><script>gomage/adspromo-window.js</script></action>
     		<action method="addJs"><script>gomage/adspromo.js</script></action> 
+    		<block type="gomage_adspromo/header" name="gomage.adspromo.header"/> 
     	</reference>	   
     </default>
 </layout>

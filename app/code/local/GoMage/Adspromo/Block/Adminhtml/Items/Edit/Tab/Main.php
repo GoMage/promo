@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -36,15 +36,15 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit_Tab_Main extends Mage_Adminhtml
             )
         );
 
-        $show = $fieldset->addField('show', 'select',
+        $show_type = $fieldset->addField('show_type', 'select',
             array(
-                'name'   => 'show',
+                'name'   => 'show_type',
                 'label'  => $this->__('Show'),                
                 'values' => Mage::getModel('gomage_adspromo/adminhtml_system_config_source_show')->toOptionArray(), 
             )
         ); 
         
-        $show->setOnchange('AdsPromoAdmin.setShowType(this.value)');
+        $show_type->setOnchange('AdsPromoAdmin.setShowType(this.value)');
      	     	
     	$fieldset->addField('title', 'text', array(
             'name'      => 'title',
@@ -74,6 +74,11 @@ class GoMage_Adspromo_Block_Adminhtml_Items_Edit_Tab_Main extends Mage_Adminhtml
             'format'    => Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT),
             'image'     => $this->getSkinUrl('images/grid-cal.gif'),            
         ));
+        
+        $fieldset->addField('product_ids', 'hidden', array(
+            'name'      => 'product_ids',                                    
+        ));
+        
         
         $form->setValues($item->getData());        
         

@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 	
@@ -79,12 +79,12 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
                    $styles['right'] = 0;
                    if ($image_indent = $item->getImageIndent())
                    {
-                       $styles['top'] = $image_indent . '%';
+                       $styles['top'] = $image_indent . $item->getImageIndentSymbol();
                    }
                    $styles_window['right'] = 0;
                    if ($window_indent = $item->getWindowIndent())
                    {
-                       $styles_window['top'] = $window_indent . '%';
+                       $styles_window['top'] = $window_indent . $item->getWindowIndentSymbol();
                    }
                    if ($item->getImage())
                    {
@@ -113,12 +113,12 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
                    $styles['top'] = 0;
                    if ($image_indent = $item->getImageIndent())
                    {
-                       $styles['left'] = $image_indent . '%';
+                       $styles['left'] = $image_indent . $item->getImageIndentSymbol();
                    }
                    $styles_window['top'] = 0;
                    if ($window_indent = $item->getWindowIndent())
                    {
-                       $styles_window['left'] = $window_indent . '%';
+                       $styles_window['left'] = $window_indent . $item->getWindowIndentSymbol();
                    }                   
                    if ($item->getImage())
                    {
@@ -147,12 +147,12 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
                    $styles['bottom'] = 0;
                    if ($image_indent = $item->getImageIndent())
                    {
-                       $styles['left'] = $image_indent . '%';
+                       $styles['left'] = $image_indent . $item->getImageIndentSymbol();
                    }
                    $styles_window['bottom'] = 0;
                    if ($window_indent = $item->getWindowIndent())
                    {
-                       $styles_window['left'] = $window_indent . '%';
+                       $styles_window['left'] = $window_indent . $item->getWindowIndentSymbol();
                    }  
                    if ($item->getImage())
                    {
@@ -273,12 +273,12 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
                    $styles['left'] = 0;
                    if ($image_indent = $item->getImageIndent())
                    {
-                       $styles['top'] = $image_indent . '%';
+                       $styles['top'] = $image_indent . $item->getImageIndentSymbol();
                    }
                    $styles_window['left'] = 0;
                    if ($window_indent = $item->getWindowIndent())
                    {
-                       $styles_window['top'] = $window_indent . '%';
+                       $styles_window['top'] = $window_indent . $item->getWindowIndentSymbol();
                    }
                    if ($item->getImage())
                    {
@@ -302,7 +302,7 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
                $item->setData($key, $value);
            }
            
-           if ($item->getShow() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::WINDOW)
+           if ($item->getShowType() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::WINDOW)
            {
                $styles_window = array();
                switch ($item->getWindowPosition())
@@ -311,28 +311,28 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
                        $styles_window['left'] = 0;
                        if ($window_indent = $item->getWindowIndent())
                        {
-                           $styles_window['top'] = $window_indent . '%';
+                           $styles_window['top'] = $window_indent . $item->getWindowIndentSymbol();
                        }                   
                    break;
                    case GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Position::RIGHT :
                        $styles_window['right'] = 0;
                        if ($window_indent = $item->getWindowIndent())
                        {
-                           $styles_window['top'] = $window_indent . '%';
+                           $styles_window['top'] = $window_indent . $item->getWindowIndentSymbol();
                        }
                    break;
                    case GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Position::TOP :
                        $styles_window['top'] = 0;
                        if ($window_indent = $item->getWindowIndent())
                        {
-                           $styles_window['left'] = $window_indent . '%';
+                           $styles_window['left'] = $window_indent . $item->getWindowIndentSymbol();
                        }  
                    break;
                    case GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Position::BOTTOM :
                        $styles_window['bottom'] = 0;
                        if ($window_indent = $item->getWindowIndent())
                        {
-                           $styles_window['left'] = $window_indent . '%';
+                           $styles_window['left'] = $window_indent . $item->getWindowIndentSymbol();
                        }                   
                    break;
                }
@@ -401,14 +401,16 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
         {            
            $key = 'gomage-ads-window-' . $item->getId();
            $configs[$key]['id'] = $item->getId();  
-           $configs[$key]['title'] = $item->getTitle();
+           $configs[$key]['title'] = $this->stripTags($item->getTitle(), null, true);
            $configs[$key]['window_loaded'] = $item->getWindowLoaded();
            $configs[$key]['window_show'] = $item->getWindowShow();
            $configs[$key]['window_hide'] = $item->getWindowHide();
            $configs[$key]['window_close_selected'] = $item->getWindowCloseSelected();
            $configs[$key]['window_position'] = $item->getWindowPosition();
-           $configs[$key]['window_width'] = $item->getWindowWidth();
-           $configs[$key]['window_height'] = $item->getWindowHeight();
+           $configs[$key]['window_width'] = $item->getWindowWidth() + intval($item->getWindowBorderSize())*2 + intval($item->getWindowIndentText())*2;
+           $configs[$key]['window_border_size'] = intval($item->getWindowBorderSize())*2 + intval($item->getWindowIndentText())*2;
+           $configs[$key]['window_height_type'] = $item->getWindowHeightType();
+           $configs[$key]['window_height'] = $item->getWindowHeight()+ intval($item->getWindowBorderSize())*2 + intval($item->getWindowIndentText())*2;           
            $configs[$key]['window_backgroundview'] = ($item->getWindowBackgroundview() ? 1 : null);                                                                                        
            $configs[$key]['window_content'] = $processor->filter($item->getWindowContent());
            
@@ -420,13 +422,27 @@ class GoMage_Adspromo_Block_Form extends Mage_Core_Block_Template{
            $configs[$key]['window_timer'] = null;
            $configs[$key]['image_exists'] = $item->isImage();
            $configs[$key]['window_effect'] = $item->getWindowEffect();
+           $configs[$key]['window_button_position'] = $item->getWindowButtonPosition();
            $configs[$key]['image_button_color'] = $item->getImageButtonColor();
            
            $configs[$key]['image_alignment'] = $item->getImageAlignment();           
-           $configs[$key]['only_window'] = ($item->getShow() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::WINDOW ? 1 : 0);
-           
+           $configs[$key]['only_window'] = ($item->getShowType() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::WINDOW ? 1 : 0);
+                      
+           if ($this->getCookie()->get() && $item->getWindowLoaded() == 1){
+           		$shows_count = intval($this->getCookie()->get($key));
+           		$window_shows_count = intval($item->getWindowShowsCount());
+           		if ($shows_count && ($shows_count >= $window_shows_count)){
+           			$configs[$key]['window_loaded'] = 0;
+           		}           		
+           }                       
         } 
         
         return Mage::helper('core')->jsonEncode($configs);
     }
+    
+    public function getCookie()
+    {
+        return Mage::getSingleton('core/cookie');
+    } 
+    
 }

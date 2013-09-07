@@ -8,13 +8,14 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
+ * @since        Class available since Release 1.0
  */ 
  -->
 <config>
     <modules>
         <GoMage_Adspromo>
-            <version>1.0</version>
+            <version>1.1</version>
         </GoMage_Adspromo>
     </modules>
 	<frontend>
@@ -82,17 +83,25 @@
                     </adspromo_collect_totals_after>
                 </observers>
             </admin_system_config_changed_section_gomage_activation>
+            <controller_action_predispatch>
+                <observers>
+                    <gomage_adspromo_notify>
+                        <class>gomage_adspromo/observer_notify</class>
+                        <method>notify</method>
+                    </gomage_adspromo_notify>
+                </observers>
+            </controller_action_predispatch>
         </events> 
         <menu>
-			<cms>
+			<promo>
 				<children>
 					<gomage_adspromo> 
 						<title>Ads &amp; Promo</title>
-						<sort_order>20</sort_order>           
+						<sort_order>30</sort_order>           
 						<action>gomage_adspromo/adminhtml_items</action>
 					</gomage_adspromo> 
 				</children>
-			</cms>
+			</promo>
 		</menu>         
         <layout>
             <updates>
@@ -112,6 +121,9 @@
 	                                    <gomage_activation>
 	                                    	<title>GoMage - Activation</title>
 	                                    </gomage_activation>
+                                        <gomage_notification>
+	                                    	<title>GoMage - Notifications</title>
+	                                    </gomage_notification>
 	                                    <gomage_adspromo>
 	                                    	<title>GoMage - Ads &amp; Promo</title>
 	                                    </gomage_adspromo>
@@ -119,13 +131,13 @@
 	                            </config>
 	                        </children>
 	                    </system>
-	                    <cms>
+	                    <promo>
 	                    	<children>
 	                    		<gomage_adspromo>
                                 	<title>Ads &amp; Promo</title>
                                 </gomage_adspromo>
 	                    	</children>	
-	                    </cms>	
+	                    </promo>	
 	                </children>
 	            </admin>
 	        </resources>
@@ -174,5 +186,12 @@
         <helpers>
 			<gomage_adspromo><class>GoMage_Adspromo_Helper</class></gomage_adspromo>
 		</helpers>
-	</global>	
+	</global>
+    <default>
+        <gomage_notification>
+            <notification>
+                <enable>1</enable>
+            </notification>
+        </gomage_notification>
+	</default>
 </config>

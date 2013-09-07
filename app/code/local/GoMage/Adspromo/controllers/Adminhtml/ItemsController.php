@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -16,7 +16,7 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
 	
 	protected function _initAction() {
 		$this->loadLayout()
-			->_setActiveMenu('cms/gomage_adspromo')
+			->_setActiveMenu('promo/gomage_adspromo')
 			->_addBreadcrumb(Mage::helper('adminhtml')->__('Ads & Promo'), Mage::helper('adminhtml')->__('Ads & Promo'));
 		
 		return $this;
@@ -30,7 +30,6 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
 	
     public function saveAction(){
 		if ($data = $this->getRequest()->getPost()) {
-			
 			try{
 			    
 			    $data = $this->_filterPostData($data); 
@@ -49,9 +48,6 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
 				}
 				
             }catch(Mage_Core_Exception $e){
-
-                echo $e->getMessage() . "<br><br>";
-                print_r($e); exit();
                 
             	Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             	
@@ -65,9 +61,6 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
             	return false;
             	
             }catch(Exception $e){
-                
-                echo $e->getMessage() . "<br><br>";
-                print_r($e); exit();
                             	
             	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can\'t save data'));
             	
@@ -120,6 +113,9 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
 		    $data['alternative_image'] = $data['alternative_image']['value'];
 		    $this->adsResizeImage($data['alternative_image'], $data['alternative_image_width'], $data['alternative_image_height']);
 		}
+        $search = array("on,",",on");
+        $replace = array("","");
+        $data['product_ids'] = str_replace($search,$replace,$data['product_ids']);
         
         return $data;
     } 
@@ -183,26 +179,48 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
 		$this->_redirect('*/*/');
 	}
 	
-	public function massDeleteAction(){
-		
+	public function massDeleteAction(){		
 		if($ids = $this->getRequest()->getParam('id')){
 			if(is_array($ids) && !empty($ids)){
 				$this->_deleteItems($ids);
-			}
-			
-		}
-		
-		$this->_redirect('*/*/');
-		
+			}			
+		}		
+		$this->_redirect('*/*/');		
 	}
 	
 	protected function _deleteItems($ids){
 		if(is_array($ids) && !empty($ids)){
-			foreach($ids as $id){
-				
+			foreach($ids as $id){				
 				$item = Mage::getModel('gomage_adspromo/item')->load($id);
-				$item->delete();
-				
+				$item->delete();				
+			}
+		}
+	}
+	
+	public function massEnableAction(){		
+		if($ids = $this->getRequest()->getParam('id')){
+			if(is_array($ids) && !empty($ids)){
+				$this->_setstatusItems($ids, 1);
+			}			
+		}		
+		$this->_redirect('*/*/');		
+	}
+	
+	public function massDisableAction(){		
+		if($ids = $this->getRequest()->getParam('id')){
+			if(is_array($ids) && !empty($ids)){
+				$this->_setstatusItems($ids, 0);
+			}			
+		}		
+		$this->_redirect('*/*/');		
+	}
+	
+	protected function _setstatusItems($ids, $status){
+		if(is_array($ids) && !empty($ids)){
+			foreach($ids as $id){				
+				$item = Mage::getModel('gomage_adspromo/item')->load($id);
+				$item->setData('status', $status);
+				$item->save();				
 			}
 		}
 	}
@@ -232,8 +250,16 @@ class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controlle
 		$this->_addContent($this->getLayout()->createBlock('gomage_adspromo/adminhtml_items_edit'))
 				->_addLeft($this->getLayout()->createBlock('gomage_adspromo/adminhtml_items_edit_tabs'));
 		
-		$this->renderLayout();
-		
+		$this->renderLayout();		
 	}
+	
+	public function gridAction()
+    {
+        $this->getResponse()->setBody(
+            $this->getLayout()->createBlock('gomage_adspromo/adminhtml_items_edit_tab_products', 'adspromo.products.grid')
+                ->toHtml()
+        );
+    }
+	
 	
 }

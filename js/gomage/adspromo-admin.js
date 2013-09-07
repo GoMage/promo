@@ -1,8 +1,20 @@
-Validation.add('gomage-validate-number-range-100', 'Please use only numbers (0-9) in this field.',		
+ /**
+ * GoMage Ads & Promo Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2011 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.1
+ * @since        Class available since Release 1.0
+ */
+
+Validation.add('gomage-validate-number-range-99', 'range from 0 to 99',		
 function(v) {
 	return (Validation.get('IsEmpty').test(v)
 			|| (!isNaN(parseNumber(v)) && !/^\s+$/.test(parseNumber(v))))
-			&& !((parseNumber(v) > 100) || (parseNumber(v) < 0));
+			&& !((parseNumber(v) > 99) || (parseNumber(v) < 0));
 			
 });
 
@@ -30,6 +42,9 @@ document.observe("dom:loaded", function() {
 	AdsPromoAdmin.setShowType(AdsPromoAdmin.show_type);
 	AdsPromoAdmin.setImageOpenLink();
 	AdsPromoAdmin.setWindowPosition();
+	AdsPromoAdmin.setWindowLoaded();
+	AdsPromoAdmin.setpercentRange('image_indent_type', 'image_indent');
+	AdsPromoAdmin.setpercentRange('window_indent_type', 'window_indent');
 });
 
 
@@ -144,12 +159,29 @@ AdsPromoAdminSettings = Class.create({
 		{								
 			$('window_indent').value = '0';
 			$('window_indent').up('tr').hide();
+			$('window_indent_type').up('tr').hide();
 		}
 		else
 		{
 			$('window_indent').up('tr').show();
+			$('window_indent_type').up('tr').show();
 		}	
-	},	
+	},
+	
+	setWindowLoaded: function(){
+		if ($('window_loaded').value == '0')
+		{								
+			$('window_shows_count').value = '1';
+			$('window_shows_count').up('tr').hide();			
+			$('window_reset_cookies').value = '1';
+			$('window_reset_cookies').up('tr').hide();
+		}
+		else
+		{
+			$('window_shows_count').up('tr').show();			
+			$('window_reset_cookies').up('tr').show();
+		}	
+	}, 
 	
 	changeOptions: function(control_id, data, default_value){
 		 var control = $(control_id);
@@ -161,6 +193,51 @@ AdsPromoAdminSettings = Class.create({
 				 control.options[control.options.length] = new Option(option.label, option.value, false, option.value == default_value);
 			 });	 		     					 
 		 }
-	}	
+	},
+	
+	setpercentRange: function(parent_id, control_id){
+		if ($(parent_id).value == '0'){
+			$(control_id).addClassName("gomage-validate-number-range-99");
+		}else{
+			$(control_id).removeClassName("gomage-validate-number-range-99");
+		}
+	}
 	
 });	
+
+var blockItems = $H({});
+
+function registerBlockItem(grid, element, checked){	
+    if(checked){
+        blockItems.set(element.value, 0);        
+    }else{
+        blockItems.unset(element.value);
+    }
+    $('product_ids').value = blockItems.keys();
+    grid.reloadParams = {'selected_products[]':blockItems.keys()};
+}
+
+var tabIndex = 1000;
+
+function BlockItemRowInit(grid, row){
+    var checkbox = $(row).getElementsByClassName('checkbox')[0];
+    if(checkbox){        
+        if (checkbox.checked){
+        	blockItems.set(checkbox.value, 0);
+        	$('product_ids').value = blockItems.keys();
+        	grid.reloadParams = {'selected_products[]':blockItems.keys()};
+        }
+    }
+}
+
+function BlockItemRowClick(grid, event){
+    var trElement = Event.findElement(event, 'tr');
+    var isInput   = Event.element(event).tagName == 'INPUT';
+    if(trElement){
+        var checkbox = Element.getElementsBySelector(trElement, 'input');
+        if(checkbox[0]){
+            var checked = isInput ? checkbox[0].checked : !checkbox[0].checked;
+            adspromo_products_gridJsObject.setCheckboxChecked(checkbox[0], checked);
+        }
+    }
+}

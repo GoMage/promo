@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
  ?>
@@ -15,15 +15,17 @@
 <?php foreach ($this->getAdspromoImageItems() as $item): ?>
        
     <div id="gomage-ads-image-container-<?php echo $item->getId(); ?>" class="gomage-ads-image-container" style="<?php echo $item->getAdsImageStyles(); ?>">
-      <a href="<?php echo $item->getImageOpenLinkUrl(); ?>" <?php if ($item->getImageOpenLink() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Image_Openlink::NEW_WINDOW): ?>target="_blank"<?php endif; ?> 
+      <a href="<?php echo $item->getImageOpenLinkUrl(); ?>"  
              <?php if ($item->getImageOpenLink() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Image_Openlink::PROMO_WINDOW): ?>
                    <?php if ($item->getWindowShow() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Window_Show::MOUSE_CLICK): ?>                   		                   		
                         onclick="ShowAdsWindow('gomage-ads-window-<?php echo $item->getId(); ?>'); return false;"
-                   <?php endif; ?>		
+                   <?php endif; ?>
+             <?php else: ?>
+             	   onclick="AddAdsClick(<?php echo $item->getId(); ?>, 0); return false;"  		
              <?php endif; ?> >
-    	<img alt="<?php echo $item->getTitle() ?>" id="gomage-ads-baseimage-<?php echo $item->getId(); ?>" class="gomage-ads-baseimage" src="<?php echo $item->getBaseImageUrl(); ?>" style="<?php echo $item->getAdsImageStyles(); ?> width: <?php echo $item->getData('effect_width'); ?>px; height: <?php echo $item->getData('effect_height'); ?>px;">
+    	<img alt="<?php echo $this->stripTags($item->getTitle(), null, true) ?>" id="gomage-ads-baseimage-<?php echo $item->getId(); ?>" class="gomage-ads-baseimage" src="<?php echo $item->getBaseImageUrl(); ?>" style="<?php echo $item->getAdsImageStyles(); ?> width: <?php echo $item->getData('effect_width'); ?>px; height: <?php echo $item->getData('effect_height'); ?>px;" />
     	<?php if ($item->getAlternativeImageUrl()): ?>
-    		<img alt="<?php echo $item->getTitle() ?>" id="gomage-ads-alternativeimage-<?php echo $item->getId(); ?>" style="display: none; <?php echo $item->getAdsImageStyles(); ?>  width: <?php echo $item->getData('alt_effect_width'); ?>px; height: <?php echo $item->getData('alt_effect_height'); ?>px;" class="gomage-ads-alternativeimage" src="<?php echo $item->getAlternativeImageUrl(); ?>">
+    		<img alt="<?php echo $this->stripTags($item->getTitle(), null, true) ?>" id="gomage-ads-alternativeimage-<?php echo $item->getId(); ?>" style="display: none; <?php echo $item->getAdsImageStyles(); ?>  width: <?php echo $item->getData('alt_effect_width'); ?>px; height: <?php echo $item->getData('alt_effect_height'); ?>px;" class="gomage-ads-alternativeimage" src="<?php echo $item->getAlternativeImageUrl(); ?>" />
     	<?php endif; ?>	
       </a>	
     </div>    
@@ -34,5 +36,6 @@
 //<![CDATA[
     var gomage_image_configs = <?php echo $this->getAdsImageConfigs(); ?>; 
     var gomage_window_configs = <?php echo $this->getAdsWindowConfigs(); ?>;
+    var gomage_ads_click_url = '<?php echo $this->getUrl('adspromo/index/click'); ?>';
 //]]>
 </script>

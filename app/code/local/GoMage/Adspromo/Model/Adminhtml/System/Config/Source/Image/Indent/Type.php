@@ -8,15 +8,14 @@
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
  * @version      Release: 1.1
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 1.1
  */
 	
-class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Category_Applayto{
+class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Image_Indent_Type{
 
+    const PERCENT = 0;
+    const PIXELS  = 1;
     
-    const ALL_CATEGORIES = 1;
-    const SELECTED_CATEGORIES = 2;
-            
     /**
      * Options getter
      *
@@ -28,8 +27,8 @@ class GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Category_Applayto{
     	$helper = Mage::helper('gomage_adspromo');
     	
         return array(
-            array('value' => self::ALL_CATEGORIES, 'label'=>$helper->__('All Categories')),
-            array('value' => self::SELECTED_CATEGORIES, 'label'=>$helper->__('Selected Categories')),           
+            array('value' => self::PERCENT, 'label'=>$helper->__('Percent')),
+            array('value' => self::PIXELS, 'label'=>$helper->__('Pixels')),                        
         );
     }
 

@@ -7,7 +7,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
+ * @version      Release: 1.1
  * @since        Class available since Release 1.0
  */
 
@@ -58,12 +58,12 @@ class GoMage_Adspromo_Model_Item extends Mage_Core_Model_Abstract
     
     public function isImage()
     {
-        return ($this->getShow() != GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::WINDOW);
+        return ($this->getShowType() != GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::WINDOW);
     }
     
     public function isWindow()
     {
-        return ($this->getShow() != GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::IMAGE);
+        return ($this->getShowType() != GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Show::IMAGE);
     }
     
     public function isActive()
@@ -81,11 +81,16 @@ class GoMage_Adspromo_Model_Item extends Mage_Core_Model_Abstract
             return false;  
 
         if (($this->getPageApplayTo() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Page_Applayto::SELECTED_PAGES)
-             && !Mage::registry('current_category') )
+             && !Mage::registry('current_category') && !Mage::registry('current_product'))
         {          
-              if (!$this->getPages()) return false;     
-              
+              if (!$this->getPages()) return false;   
+
               $pages = explode(',', $this->getPages());
+              
+              if (in_array(GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Page_Pages::CHECKOUT, $pages)){
+              		$pages[] = 'gomage_checkout/onepage';
+              }
+              
               if (Mage::app()->getFrontController()->getRequest()->getRequestedRouteName() == 'cms')
               {
                   if (!in_array(Mage::getSingleton('cms/page')->getIdentifier(), $pages))
@@ -93,20 +98,27 @@ class GoMage_Adspromo_Model_Item extends Mage_Core_Model_Abstract
               }
               else 
               {
-                  if (!(in_array(Mage::app()->getFrontController()->getRequest()->getRequestedRouteName(), $pages)
-                      || in_array(Mage::app()->getFrontController()->getRequest()->getRequestedControllerName(), $pages)))
+                  if (!in_array(Mage::app()->getFrontController()->getRequest()->getRequestedRouteName().'/'.Mage::app()->getFrontController()->getRequest()->getRequestedControllerName(), $pages))
                       return false;
               }
                 
         }
 
         if (($this->getCatApplayTo() == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Category_Applayto::SELECTED_CATEGORIES)
-             && Mage::registry('current_category') )
+             && Mage::registry('current_category') && !Mage::registry('current_product') )
         {          
               if (!$this->getCategories()) return false;                
 
               $categories = explode(',', $this->getCategories());
               if (!in_array(Mage::registry('current_category')->getId(), $categories))
+                  return false;
+        }
+        
+        if (Mage::registry('current_product')){
+        	
+        	if (!$this->getProductIds()) return false;
+        	$product_ids = explode(',', $this->getProductIds());
+        	 if (!in_array(Mage::registry('current_product')->getId(), $product_ids))
                   return false;
         }
                 
@@ -199,6 +211,22 @@ class GoMage_Adspromo_Model_Item extends Mage_Core_Model_Abstract
         }
 
         return 0;    
+    }
+    
+    public function getImageIndentSymbol(){
+    	if ($this->getData('image_indent_type') == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Image_Indent_Type::PERCENT){
+    		return "%";
+    	}else{
+    		return "px";
+    	}
+    }
+    
+    public function getWindowIndentSymbol(){
+    	if ($this->getData('window_indent_type') == GoMage_Adspromo_Model_Adminhtml_System_Config_Source_Image_Indent_Type::PERCENT){
+    		return "%";
+    	}else{
+    		return "px";
+    	}
     }
             
 }
