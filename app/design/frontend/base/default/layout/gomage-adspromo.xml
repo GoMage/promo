@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+ /**
+ * GoMage Ads & Promo Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2011 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.0
+ * @since        Class available since Release 1.0
+ */
+ -->
+<layout version="0.1.0">
+	<default>        
+        <reference name="after_body_start">
+            <block type="gomage_adspromo/form" name="gomage.adspromo.form" befire="-" />
+        </reference>
+        <reference name="head">    	    		    		    		    		    		      		 
+    		<action method="addItem"><type>skin_css</type><name>css/gomage/ads-and-promo.css</name></action>
+    		<action method="addJs"><script>gomage/adspromo-effects.js</script></action>
+    		<action method="addJs"><script>gomage/adspromo-window.js</script></action>
+    		<action method="addJs"><script>gomage/adspromo.js</script></action> 
+    	</reference>	   
+    </default>
+</layout>

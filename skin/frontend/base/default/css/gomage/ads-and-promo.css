@@ -1,0 +1,75 @@
+.gomage_aap_dialog {
+	display: block;
+	position: absolute;
+}
+.gomage_aap_dialog table.gomage_aap_table_window  { 
+	border-collapse:collapse; 
+	border-spacing:0; 
+	width:100%;
+	margin:0;
+	padding:0;
+}
+.gomage_aap_dialog_not_center{
+	position: fixed;
+}
+.gomage_aap_dialog table.gomage_aap_table_window td , .gomage_aap_dialog table.gomage_aap_table_window th { 
+	padding:0; 
+}
+.gomage_aap_dialog .title_window {
+	-moz-user-select:none;
+}
+.gomage-ads-image-container{
+	z-index:80;
+}
+.overlay_gomage_aap{
+	z-index:9999 !important;
+}
+.gomage_aap_dialog{
+	z-index:10000 !important;
+}
+
+/* Overlay */
+.overlay_gomage_aap { background-color:#000; filter:alpha(opacity=60); -moz-opacity:.6; opacity:.6; -webkit-opacity:.6; }
+
+/* Promo wind TOP */
+.gomage_aap_nw { width:8px; height:8px; background:url(../../images/gomage/adspromo/gomage_aap_nw.png) 0 0 no-repeat;}
+.gomage_aap_n { height:8px; background:#fff;}
+.gomage_aap_ne { width:14px; height:8px; background:url(../../images/gomage/adspromo/gomage_aap_ne.png) 0 0 no-repeat;}
+
+/* Promo wind CONTENT */
+.gomage_aap_w { width:8px; height:11px; background:url(../../images/gomage/adspromo/popup_content_bg.png) 0 0 repeat-y;}
+.gomage_aap_e { width:15px; height:11px; background:url(../../images/gomage/adspromo/popup_content_bg.png) 100% 0 repeat-y;}
+.gomage_aap_content{background:#fff;}
+
+/* Promo wind BOTTOM */
+.gomage_aap_sw { background:url(../../images/gomage/adspromo/gomage_aap_sw.png) 0 0 no-repeat; width:12px; height:15px; }
+.gomage_aap_s { background:url(../../images/gomage/adspromo/gomage_aap_s.png) 0 0 repeat-x; height:15px; }
+.gomage_aap_se,
+.gomage_aap_sizer { background:url(../../images/gomage/adspromo/gomage_aap_sizer.png) 0 0 no-repeat; width:14px; height:15px; cursor:se-resize;}
+
+/* Promo wind Buttons */
+.gomage_aap_close { width:28px; height:28px; background:url(../../images/gomage/adspromo/close/close_1.png) no-repeat 0 0; position:absolute; top:-10px; right:-5px; cursor:pointer; z-index:10000; }
+
+.gomage_aap_close_black{background:url(../../images/gomage/adspromo/close/close_1.png) no-repeat 0 0;}
+.gomage_aap_close_blue{background:url(../../images/gomage/adspromo/close/close_2.png) no-repeat 0 0;}
+.gomage_aap_close_brown{background:url(../../images/gomage/adspromo/close/close_3.png) no-repeat 0 0;}
+.gomage_aap_close_gray{background:url(../../images/gomage/adspromo/close/close_4.png) no-repeat 0 0;}
+.gomage_aap_close_green{background:url(../../images/gomage/adspromo/close/close_5.png) no-repeat 0 0;}
+.gomage_aap_close_light_blue{background:url(../../images/gomage/adspromo/close/close_6.png) no-repeat 0 0;}
+.gomage_aap_close_light_green{background:url(../../images/gomage/adspromo/close/close_7.png) no-repeat 0 0;}
+.gomage_aap_close_orange{background:url(../../images/gomage/adspromo/close/close_8.png) no-repeat 0 0;}
+.gomage_aap_close_red{background:url(../../images/gomage/adspromo/close/close_9.png) no-repeat 0 0;}
+.gomage_aap_close_pink{background:url(../../images/gomage/adspromo/close/close_10.png) no-repeat 0 0;}
+.gomage_aap_close_violet{background:url(../../images/gomage/adspromo/close/close_11.png) no-repeat 0 0;}
+.gomage_aap_close_yellow{background:url(../../images/gomage/adspromo/close/close_12.png) no-repeat 0 0;}
+
+.gomage_aap_minimize, .gomage_aap_maximize { display:none !important;}
+
+.gomage_aap_title { height:8px; text-align:left; color:#fff; background:#fff; font-size:0px;}
+
+.gomage_aap_content { overflow:auto; font-size:12px; }
+.gomage_aap_content,
+.gomage_aap_content label { color:#333; font-family:Arial, sans-serif; }
+
+.gomage_aap_buttons { padding:10px; text-align:right; }
+.gomage_aap_buttons input.button { border-width:1px; border-style:solid; border-color:#ed6502 #a04300 #a04300 #ed6502;  background:#ffac47 url(gomage_aap/btn_bg.gif) 0 100% repeat-x; padding:0 7px 1px 7px; font:bold 12px/18px Arial, Helvetica, sans-serif; color:#fff; cursor:pointer; text-align:center; white-space:nowrap; }
