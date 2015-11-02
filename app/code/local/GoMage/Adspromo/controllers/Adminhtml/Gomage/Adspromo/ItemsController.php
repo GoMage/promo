@@ -9,9 +9,9 @@
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
  * @version      Release: 1.2
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 1.3
  */
-class GoMage_Adspromo_Adminhtml_ItemsController extends Mage_Adminhtml_Controller_Action
+class GoMage_Adspromo_Adminhtml_Gomage_Adspromo_ItemsController extends Mage_Adminhtml_Controller_Action
 {
 
     protected function _isAllowed()

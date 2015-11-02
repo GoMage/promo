@@ -38,13 +38,13 @@
     </frontend>
     <admin>
         <routers>
-			<gomage_adspromo>
-				<use>admin</use>
-				<args>
-					<module>GoMage_Adspromo</module>
-					<frontName>gomage_adspromo</frontName>
-				</args>
-			</gomage_adspromo>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <gomage_adspromo before="Mage_Adminhtml">GoMage_Adspromo_Adminhtml</gomage_adspromo>
+                    </modules>
+                </args>
+            </adminhtml>
         </routers>
     </admin>
     <adminhtml>
@@ -98,7 +98,7 @@
 					<gomage_adspromo> 
 						<title>Ads &amp; Promo</title>
 						<sort_order>30</sort_order>           
-						<action>gomage_adspromo/adminhtml_items</action>
+						<action>adminhtml/gomage_adspromo_items</action>
 					</gomage_adspromo> 
 				</children>
 			</promo>
